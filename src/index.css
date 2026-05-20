@@ -1,2 +1,56 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
 @import "tailwindcss";
 @plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "decornest";
+
+  /* PRIMARY BRAND */
+  --color-primary: #D4B06A;
+  --color-primary-content: #1A1A1A;
+
+  /* DARK LUXURY */
+  --color-secondary: #111827;
+  --color-secondary-content: #FFFFFF;
+
+  /* SOFT BACKGROUND */
+  --color-accent: #FFF8EE;
+  --color-accent-content: #3B2F2F;
+
+  /* BASE */
+  --color-base-100: #FFFFFF;
+  --color-base-200: #F8F6F2;
+  --color-base-300: #ECE7DE;
+
+  /* TEXT */
+  --color-neutral: #1F2937;
+  --color-neutral-content: #F9FAFB;
+
+  /* STATUS */
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+
+  /* BORDER */
+  --color-border: #E5E7EB;
+
+  /* RADIUS */
+  --radius-box: 1.2rem;
+  --radius-btn: 0.9rem;
+  --radius-card: 1.5rem;
+
+  /* SHADOW */
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
+  --shadow-card: 0 10px 35px rgba(17,24,39,0.08);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Playfair Display', serif;
+}
