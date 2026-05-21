@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 
 const RootLayouts = () => {
     return (
-        <div className='xl:w-11/12 2xl:max-w-full xl:max-w-7xl mx-auto'>
+        <div className='w-11/12 mx-auto'>
             <Navbar></Navbar>
             <Outlet></Outlet>
             <Footer></Footer>
