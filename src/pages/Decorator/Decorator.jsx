@@ -85,7 +85,7 @@ const Decorator = () => {
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14">
 
-        <div className="max-w-2xl">
+        <div className="max-w-2xl ">
 
           <p className="text-primary uppercase tracking-[4px] text-sm font-semibold mb-4">
             Expert Decoration Teams

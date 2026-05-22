@@ -5,6 +5,7 @@ import Decorator from '../Decorator/Decorator';
 import WhyChooseUs from './WhyChooseUs/WhyChooseUs';
 import Coverage from './Coverage/Coverage';
 import Gallery from './Gallery/Gallery';
+import Testimonial from './Testimonial/Testimonial';
 
 
 
@@ -18,6 +19,7 @@ const Home = () => {
             <WhyChooseUs></WhyChooseUs>
             <Coverage />
             <Gallery></Gallery>
+            <Testimonial></Testimonial>
         </div>
     );
 };
