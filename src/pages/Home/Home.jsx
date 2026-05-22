@@ -6,6 +6,7 @@ import WhyChooseUs from './WhyChooseUs/WhyChooseUs';
 import Coverage from './Coverage/Coverage';
 import Gallery from './Gallery/Gallery';
 import Testimonial from './Testimonial/Testimonial';
+import CTABanner from './CTABanner/CTABanner';
 
 
 
@@ -20,6 +21,7 @@ const Home = () => {
             <Coverage />
             <Gallery></Gallery>
             <Testimonial></Testimonial>
+            <CTABanner></CTABanner>
         </div>
     );
 };
