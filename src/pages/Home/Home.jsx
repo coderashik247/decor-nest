@@ -4,6 +4,7 @@ import Services from '../Services/Services';
 import Decorator from '../Decorator/Decorator';
 import WhyChooseUs from './WhyChooseUs/WhyChooseUs';
 import Coverage from './Coverage/Coverage';
+import Gallery from './Gallery/Gallery';
 
 
 
@@ -16,6 +17,7 @@ const Home = () => {
             <Decorator></Decorator>
             <WhyChooseUs></WhyChooseUs>
             <Coverage />
+            <Gallery></Gallery>
         </div>
     );
 };
