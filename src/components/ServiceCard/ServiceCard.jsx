@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
 
-const ServiceCard = ({ data }) => {
+const ServiceCard = ({ servicesData }) => {
   return (
     <section className="py-16">
 
@@ -26,7 +26,7 @@ const ServiceCard = ({ data }) => {
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
 
-        {data.map((service) => (
+        {servicesData.map((service) => (
           <div
             key={service._id}
             className="group relative h-120 rounded-[30px] overflow-hidden shadow-[0_10px_35px_rgba(17,24,39,0.08)]"
@@ -36,7 +36,7 @@ const ServiceCard = ({ data }) => {
 
             {/* IMAGE */}
             <img
-              src={service.image}
+              src={service.images[0]}
               alt={service.service_name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             />
@@ -116,7 +116,7 @@ const ServiceCard = ({ data }) => {
 
                 {/* BUTTON */}
                 <Link
-                  to={`/services/${service._id}`}
+                  to={`/services/${service.id}`}
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-primary text-primary-content font-semibold hover:opacity-90 transition-all duration-300"
                 >
                   View Details
