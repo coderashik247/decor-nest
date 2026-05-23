@@ -8,7 +8,6 @@ import AuthLayouts from "../layouts/AuthLayouts";
 import { Component } from "react";
 import ErrorPage from "../components/ErrorPage/ErrorPage";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
