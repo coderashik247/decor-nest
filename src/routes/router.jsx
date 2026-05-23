@@ -6,13 +6,14 @@ import Coverage from "../pages/Home/Coverage/Coverage";
 import ServicesDetails from "../pages/ServicesDetails/ServicesDetails";
 import AuthLayouts from "../layouts/AuthLayouts";
 import { Component } from "react";
-import Login from "../pages/Auth/LoginModal/LoginModal";
-import Register from "../pages/Auth/RegisterModal/RegisterModal";
+import ErrorPage from "../components/ErrorPage/ErrorPage";
+
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayouts,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "/",
