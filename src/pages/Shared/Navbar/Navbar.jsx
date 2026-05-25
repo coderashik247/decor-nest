@@ -3,17 +3,33 @@ import LogoNavbar from "../../../assets/decor_nest_logo2_.png";
 import { Link, NavLink } from "react-router-dom";
 import LoginModal from "../../Auth/LoginModal/LoginModal";
 import RegisterModal from "../../Auth/RegisterModal/RegisterModal";
+import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const { user, logOut } = useAuth();
 
+  const [showLoginModal, setShowLoginModal] =
+    useState(false);
+
+  const [showRegisterModal, setShowRegisterModal] =
+    useState(false);
+
+  // NAVLINK STYLE
   const linkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+    `relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
       isActive
         ? "text-primary bg-primary/10"
         : "text-neutral hover:text-primary hover:bg-base-200"
     }`;
+
+  // LOGOUT
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const links = (
     <>
@@ -45,83 +61,242 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="navbar bg-base-100/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] px-4 lg:px-10 sticky top-0 z-50">
-
-        {/* LEFT */}
-        <div className="navbar-start">
-
-          {/* MOBILE MENU */}
-          <div className="dropdown lg:hidden">
-
-            <div tabIndex={0} role="button" className="btn btn-ghost">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+      {/* NAVBAR */}
+      <div className="sticky top-0 z-50 border-b border-base-300/60 bg-base-100/85 backdrop-blur-xl">
+        
+        <div className="navbar  px-4 lg:px-8 min-h-20.5">
+          
+          {/* LEFT */}
+          <div className="navbar-start gap-2">
+            
+            {/* MOBILE MENU */}
+            <div className="dropdown lg:hidden">
+              
+              <label
+                tabIndex={0}
+                className="btn btn-ghost btn-circle"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </label>
+
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content mt-4 w-64 rounded-3xl border border-base-300 bg-base-100 p-4 shadow-2xl z-999"
+              >
+                {links}
+
+                {!user && (
+                  <div className="mt-4 space-y-2">
+                    <button
+                      onClick={() =>
+                        setShowLoginModal(true)
+                      }
+                      className="btn btn-primary w-full rounded-xl"
+                    >
+                      Login
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        setShowRegisterModal(true)
+                      }
+                      className="btn btn-outline w-full rounded-xl"
+                    >
+                      Register
+                    </button>
+                  </div>
+                )}
+              </ul>
             </div>
 
-            <ul className="menu menu-sm dropdown-content mt-3 w-56 p-3 rounded-box bg-base-100 shadow-[0_10px_35px_rgba(17,24,39,0.08)] z-50">
+            {/* LOGO */}
+            <Link
+              to="/"
+              className="group flex items-center gap-3"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl group-hover:bg-primary/30 transition-all duration-500"></div>
+
+                <img
+                  src={LogoNavbar}
+                  alt="DecorNest Logo"
+                  className="relative h-11 w-11 object-contain"
+                />
+              </div>
+
+              <div className="hidden sm:block leading-tight">
+                <h2 className="text-xl lg:text-2xl font-black tracking-tight text-neutral">
+                  DecorNest
+                </h2>
+
+                <p className="text-xs text-neutral/60">
+                  Luxury Event Decoration
+                </p>
+              </div>
+            </Link>
+          </div>
+
+          {/* CENTER */}
+          <div className="navbar-center hidden lg:flex">
+            
+            <ul className="menu menu-horizontal gap-2 rounded-full  bg-base-100 px-3 py-2">
               {links}
             </ul>
 
           </div>
 
-          {/* BRAND */}
-          <Link to="/" className="flex items-center gap-3">
+          {/* RIGHT */}
+          <div className="navbar-end gap-3">
+            
+            {/* USER DROPDOWN */}
+            {user ? (
+              <div className="dropdown dropdown-end">
+                
+                {/* AVATAR BUTTON */}
+                <label
+                  tabIndex={0}
+                  className="cursor-pointer"
+                >
+                  <div className="flex items-center gap-3 rounded-full border border-base-300 bg-base-100 px-2 py-1.5 hover:border-primary hover:bg-primary/5 transition-all duration-300">
+                    
+                    <div className="avatar">
+                      <div className="w-11 rounded-full border-2 border-primary shadow-md">
+                        <img
+                          src={
+                            user?.photoURL ||
+                            "https://i.ibb.co/4pDNDk1/avatar.png"
+                          }
+                          alt={user?.displayName}
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                    </div>
 
-            <img
-              src={LogoNavbar}
-              alt="Logo"
-              className="h-10 w-10 object-contain"
-            />
+                    <div className="hidden md:block leading-tight">
+                      <h3 className="text-sm font-bold text-neutral">
+                        {user?.displayName}
+                      </h3>
 
-            <div className="leading-tight">
-              <h2 className="text-xl font-bold text-neutral">
-                DecorNest
-              </h2>
+                      <p className="text-xs text-neutral/60">
+                        Welcome Back 👋
+                      </p>
+                    </div>
+                  </div>
+                </label>
 
-              <p className="text-xs text-neutral/60 hidden sm:block">
-                Crafting Beautiful Celebrations
-              </p>
-            </div>
+                {/* DROPDOWN CONTENT */}
+                <div
+                  tabIndex={0}
+                  className="dropdown-content mt-4 w-80 overflow-hidden rounded-[30px] border border-base-300 bg-base-100 shadow-[0_25px_80px_rgba(0,0,0,0.18)] z-999"
+                >
+                  
+                  {/* TOP */}
+                  <div className="relative overflow-hidden bg-secondary px-6 py-6 text-white">
+                    
+                    <div className="absolute -top-10 right-0 h-32 w-32 rounded-full bg-primary/10 blur-3xl"></div>
 
-          </Link>
-        </div>
+                    <div className="relative flex items-center gap-4">
+                      
+                      <div className="avatar">
+                        <div className="w-18 rounded-3xl border-2 border-primary">
+                          <img
+                            src={
+                              user?.photoURL ||
+                              "https://i.ibb.co/4pDNDk1/avatar.png"
+                            }
+                            alt={user?.displayName}
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                      </div>
 
-        {/* CENTER */}
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal gap-2">
-            {links}
-          </ul>
-        </div>
+                      <div className="min-w-0">
+                        <h2 className="truncate text-lg font-bold">
+                          {user?.displayName}
+                        </h2>
 
-        {/* RIGHT */}
-        <div className="navbar-end gap-2">
+                        <p className="truncate text-sm text-white/70">
+                          {user?.email}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-          <button
-            onClick={() => setShowLoginModal(true)}
-            className="btn btn-sm bg-base-200 text-neutral hover:bg-primary hover:text-primary-content border-none rounded-lg transition-all"
-          >
-            Login
-          </button>
+                  {/* MENU */}
+                  <div className="p-4 space-y-2">
+                    
+                    <NavLink
+                      to="/dashboard"
+                      className="flex items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-primary/10 transition-all duration-300"
+                    >
+                      <span className="text-lg">
+                        📊
+                      </span>
 
-          <button
-            onClick={() => setShowRegisterModal(true)}
-            className="btn btn-sm bg-primary text-primary-content hover:opacity-90 border-none rounded-lg transition-all"
-          >
-            Register
-          </button>
+                      Dashboard
+                    </NavLink>
 
+                    <NavLink
+                      to="/my-bookings"
+                      className="flex items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-primary/10 transition-all duration-300"
+                    >
+                      <span className="text-lg">
+                        📅
+                      </span>
+
+                      My Bookings
+                    </NavLink>
+
+                    <button
+                      onClick={handleLogOut}
+                      className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-error hover:text-white transition-all duration-300"
+                    >
+                      <span className="text-lg">
+                        🚪
+                      </span>
+
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* LOGIN */}
+                <button
+                  onClick={() =>
+                    setShowLoginModal(true)
+                  }
+                  className="hidden sm:flex btn btn-outline rounded-xl border-secondary px-5 text-secondary hover:bg-secondary hover:text-white"
+                >
+                  Login
+                </button>
+
+                {/* REGISTER */}
+                <button
+                  onClick={() =>
+                    setShowRegisterModal(true)
+                  }
+                  className="btn btn-primary rounded-xl px-5 text-primary-content shadow-lg hover:scale-[1.03] transition-all duration-300"
+                >
+                  Register
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -129,15 +304,21 @@ const Navbar = () => {
       {showLoginModal && (
         <LoginModal
           setShowLoginModal={setShowLoginModal}
-          setShowRegisterModal={setShowRegisterModal}
+          setShowRegisterModal={
+            setShowRegisterModal
+          }
         />
       )}
 
       {/* REGISTER MODAL */}
       {showRegisterModal && (
         <RegisterModal
-          setShowRegisterModal={setShowRegisterModal}
-          setShowLoginModal={setShowLoginModal}
+          setShowRegisterModal={
+            setShowRegisterModal
+          }
+          setShowLoginModal={
+            setShowLoginModal
+          }
         />
       )}
     </>

@@ -7,92 +7,132 @@ import {
   FaImage,
   FaArrowRight,
 } from "react-icons/fa";
+import Social from "../Social/Social";
+import useAuth from "../../../hooks/useAuth";
+import axios from "axios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
-const RegisterModal = ({
-  setShowRegisterModal,
-  setShowLoginModal,
-}) => {
+const RegisterModal = ({ setShowRegisterModal, setShowLoginModal }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const { registerUser, updateUserProfile } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
   const handleRegistration = (data) => {
-    console.log(data);
+    const profileImg = data.photo[0];
+    registerUser(data.email, data.password)
+      .then((result) => {
+        console.log(result);
+        // store the image and get the photo url:
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
+
+        axios.post(image_API_URL, formData)
+        .then(res =>{
+            console.log(res.data.data.url);
+
+            const photoURL= res.data.data.url;
+
+            const userInfo = {
+                email: data.email,
+                displayName: data.name,
+                photoURL: photoURL
+            }
+
+            // user data save on database
+            axiosSecure.post('/users', userInfo)
+            .then(res =>{
+                if(res.data.insertedId){
+                    console.log("User created in the database");
+                }
+            })  
+
+            // update user profile:
+            const userProfile = {
+                displayName: data.name,
+                photoURL: photoURL
+            }
+
+            updateUserProfile(userProfile)
+            .then( () => {
+                console.log('User profile updated!!!');
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        })
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
-  // 🔥 FIXED CLOSE
+  // CLOSE MODAL
   const handleClose = () => {
     setShowRegisterModal(false);
   };
 
   return (
-    <dialog className="modal modal-open backdrop-blur-md px-4">
-
+    <dialog className="modal modal-open px-3 sm:px-4 backdrop-blur-md">
       {/* BACKDROP */}
-      <div
-        className="fixed inset-0 bg-black/40"
-        onClick={handleClose}
-      ></div>
+      <div className="fixed inset-0 bg-black/50" onClick={handleClose}></div>
 
       {/* MODAL */}
-      <div className="modal-box max-w-2xl w-full bg-base-100 border border-base-300 rounded-4xl p-0 overflow-hidden shadow-2xl relative z-10">
-
+      <div className="modal-box relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto overflow-hidden rounded-[28px] sm:rounded-[36px] border border-base-300 bg-base-100 p-0 shadow-2xl">
         {/* TOP SECTION */}
-        <div className="relative bg-secondary text-secondary-content px-8 pt-10 pb-24 overflow-hidden">
+        <div className="relative overflow-hidden bg-secondary px-5 sm:px-8 pt-8 sm:pt-10 pb-20 sm:pb-24 text-secondary-content">
+          {/* GLOW EFFECT */}
+          <div className="absolute -left-10 -top-20 h-52 w-52 rounded-full bg-primary/20 blur-3xl"></div>
 
-          {/* GLOW */}
-          <div className="absolute -top-20 -left-10 w-52 h-52 bg-primary/20 blur-3xl rounded-full"></div>
-
-          <div className="absolute top-0 right-0 w-44 h-44 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute right-0 top-0 h-44 w-44 rounded-full bg-primary/10 blur-3xl"></div>
 
           {/* CLOSE BUTTON */}
           <button
             type="button"
             onClick={handleClose}
-            className="btn btn-sm btn-circle bg-white/10 border-none text-white hover:bg-primary hover:text-black absolute top-5 right-5"
+            className="btn btn-circle btn-sm absolute right-4 top-4 border-none bg-white/10 text-white hover:bg-primary hover:text-black"
           >
             ✕
           </button>
 
           {/* TEXT */}
           <div className="relative z-10">
-
-            <p className="uppercase tracking-[4px] text-primary text-sm font-semibold mb-3">
+            <p className="mb-3 text-xs sm:text-sm font-semibold uppercase tracking-[4px] text-primary">
               Join DecorNest
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-              Create Your <br /> Account
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+              Create Your <br className="hidden sm:block" />
+              Account
             </h2>
 
-            <p className="mt-4 text-white/70 text-sm">
-              Register now and explore premium decoration
-              services for your dream events.
+            <p className="mt-4 max-w-lg text-sm sm:text-base leading-7 text-white/70">
+              Register now and explore premium decoration services for weddings,
+              birthdays, interiors, and luxury events.
             </p>
-
           </div>
         </div>
 
-        {/* FORM */}
+        {/* FORM SECTION */}
         <form
           onSubmit={handleSubmit(handleRegistration)}
-          className="px-8 pb-8 -mt-14 relative z-20"
+          className="relative z-20 -mt-14 px-4 sm:px-6 md:px-8 pb-6 sm:pb-8"
         >
-
           {/* CARD */}
-          <div className="bg-base-100 rounded-[28px] border border-base-300 p-6 shadow-xl space-y-5">
-
+          <div className="space-y-5 rounded-3xl sm:rounded-[30px] border border-base-300 bg-base-100 p-4 sm:p-6 shadow-xl">
             {/* NAME */}
             <div>
-
-              <label className="font-semibold text-sm mb-2 block">
+              <label className="mb-2 block text-sm font-semibold">
                 Full Name
               </label>
 
               <div className="relative">
-
                 <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40" />
 
                 <input
@@ -101,57 +141,48 @@ const RegisterModal = ({
                     required: "Name is required",
                   })}
                   placeholder="Enter your full name"
-                  className="input input-bordered w-full rounded-2xl pl-12 h-14 focus:outline-none focus:border-primary"
+                  className="input input-bordered h-12 sm:h-14 w-full rounded-2xl pl-12 focus:border-primary focus:outline-none"
                 />
-
               </div>
 
               {errors.name && (
-                <p className="text-error text-sm mt-2">
-                  {errors.name.message}
-                </p>
+                <p className="mt-2 text-sm text-error">{errors.name.message}</p>
               )}
-
             </div>
 
             {/* PHOTO */}
             <div>
-
-              <label className="font-semibold text-sm mb-2 block">
+              <label className="mb-2 block text-sm font-semibold">
                 Profile Photo
               </label>
 
               <div className="relative">
-
-                <FaImage className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 z-10" />
+                <FaImage className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-base-content/40" />
 
                 <input
                   type="file"
+                  accept="image/*"
                   {...register("photo", {
                     required: "Photo is required",
                   })}
-                  className="file-input file-input-bordered w-full rounded-2xl pl-10 h-14"
+                  className="file-input file-input-bordered h-12 sm:h-14 w-full rounded-2xl pl-10"
                 />
-
               </div>
 
               {errors.photo && (
-                <p className="text-error text-sm mt-2">
+                <p className="mt-2 text-sm text-error">
                   {errors.photo.message}
                 </p>
               )}
-
             </div>
 
             {/* EMAIL */}
             <div>
-
-              <label className="font-semibold text-sm mb-2 block">
+              <label className="mb-2 block text-sm font-semibold">
                 Email Address
               </label>
 
               <div className="relative">
-
                 <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40" />
 
                 <input
@@ -160,28 +191,24 @@ const RegisterModal = ({
                     required: "Email is required",
                   })}
                   placeholder="Enter your email"
-                  className="input input-bordered w-full rounded-2xl pl-12 h-14 focus:outline-none focus:border-primary"
+                  className="input input-bordered h-12 sm:h-14 w-full rounded-2xl pl-12 focus:border-primary focus:outline-none"
                 />
-
               </div>
 
               {errors.email && (
-                <p className="text-error text-sm mt-2">
+                <p className="mt-2 text-sm text-error">
                   {errors.email.message}
                 </p>
               )}
-
             </div>
 
             {/* PASSWORD */}
             <div>
-
-              <label className="font-semibold text-sm mb-2 block">
+              <label className="mb-2 block text-sm font-semibold">
                 Password
               </label>
 
               <div className="relative">
-
                 <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40" />
 
                 <input
@@ -190,8 +217,7 @@ const RegisterModal = ({
                     required: "Password is required",
                     minLength: {
                       value: 6,
-                      message:
-                        "Password must be at least 6 characters",
+                      message: "Password must be at least 6 characters",
                     },
                     pattern: {
                       value:
@@ -201,71 +227,46 @@ const RegisterModal = ({
                     },
                   })}
                   placeholder="Create a strong password"
-                  className="input input-bordered w-full rounded-2xl pl-12 h-14 focus:outline-none focus:border-primary"
+                  className="input input-bordered h-12 sm:h-14 w-full rounded-2xl pl-12 focus:border-primary focus:outline-none"
                 />
-
               </div>
 
               {errors.password && (
-                <p className="text-error text-sm mt-2">
+                <p className="mt-2 text-sm text-error">
                   {errors.password.message}
                 </p>
               )}
-
             </div>
 
             {/* REGISTER BUTTON */}
-            <button className="btn btn-primary w-full h-14 rounded-2xl text-primary-content text-base font-semibold border-none hover:scale-[1.02] transition-all duration-300">
-
+            <button className="btn btn-primary h-12 sm:h-14 w-full rounded-2xl border-none text-sm sm:text-base font-semibold text-primary-content transition-all duration-300 hover:scale-[1.01]">
               Create Account
-
               <FaArrowRight />
-
             </button>
 
             {/* DIVIDER */}
-            <div className="divider text-xs text-base-content/40">
-              OR
-            </div>
+            <div className="divider text-xs text-base-content/40">OR</div>
 
-            {/* GOOGLE */}
-            <button
-              type="button"
-              className="btn bg-base-100 border border-base-300 w-full h-14 rounded-2xl hover:border-primary hover:bg-primary/5"
-            >
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
-                alt="google"
-                className="w-5 h-5"
-              />
-
-              Continue with Google
-            </button>
+            {/* GOOGLE BUTTON */}
+            <Social></Social>
 
             {/* LOGIN */}
-            <p className="text-center text-sm text-base-content/70 pt-2">
-
+            <p className="pt-2 text-center text-sm text-base-content/70">
               Already have an account?
-
               <button
                 type="button"
                 onClick={() => {
                   setShowRegisterModal(false);
                   setShowLoginModal(true);
                 }}
-                className="ml-2 text-primary font-semibold hover:underline"
+                className="ml-2 font-semibold text-primary hover:underline"
               >
                 Login
               </button>
-
             </p>
-
           </div>
-
         </form>
-
       </div>
-
     </dialog>
   );
 };

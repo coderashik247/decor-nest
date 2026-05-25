@@ -5,6 +5,8 @@ import {
   FaLock,
   FaArrowRight,
 } from "react-icons/fa";
+import Social from "../Social/Social";
+import useAuth from "../../../hooks/useAuth";
 
 const LoginModal = ({
   setShowLoginModal,
@@ -16,8 +18,16 @@ const LoginModal = ({
     formState: { errors },
   } = useForm();
 
+  const {signInUser} = useAuth();
+
   const handleLogin = (data) => {
-    console.log(data);
+    signInUser(data.email, data.password)
+    .then((result) =>{
+        console.log(result.user);
+    })
+    .catch((error) =>{
+        console.log(error.message);
+    })
   };
 
   // 🔥 Modal close fix
@@ -174,18 +184,7 @@ const LoginModal = ({
             </div>
 
             {/* GOOGLE BUTTON */}
-            <button
-              type="button"
-              className="btn bg-base-100 border border-base-300 w-full h-14 rounded-2xl hover:border-primary hover:bg-primary/5"
-            >
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
-                alt="google"
-                className="w-5 h-5"
-              />
-
-              Continue with Google
-            </button>
+            <Social></Social>
 
             {/* REGISTER */}
             <p className="text-center text-sm text-base-content/70 pt-2">

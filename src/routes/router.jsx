@@ -4,7 +4,6 @@ import Home from "../pages/Home/Home";
 import Services from "../pages/Services/Services";
 import Coverage from "../pages/Home/Coverage/Coverage";
 import ServicesDetails from "../pages/ServicesDetails/ServicesDetails";
-import AuthLayouts from "../layouts/AuthLayouts";
 import { Component } from "react";
 import ErrorPage from "../components/ErrorPage/ErrorPage";
 
