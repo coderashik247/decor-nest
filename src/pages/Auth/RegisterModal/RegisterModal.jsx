@@ -11,8 +11,9 @@ import Social from "../Social/Social";
 import useAuth from "../../../hooks/useAuth";
 import axios from "axios";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuthModal from "../../../hooks/useAuthModal";
 
-const RegisterModal = ({ setShowRegisterModal, setShowLoginModal }) => {
+const RegisterModal = () => {
   const {
     register,
     handleSubmit,
@@ -20,53 +21,59 @@ const RegisterModal = ({ setShowRegisterModal, setShowLoginModal }) => {
   } = useForm();
 
   const { registerUser, updateUserProfile } = useAuth();
+  const { setShowRegisterModal, setShowLoginModal, setPendingBooking } =
+    useAuthModal();
   const axiosSecure = useAxiosSecure();
 
   const handleRegistration = (data) => {
     const profileImg = data.photo[0];
     registerUser(data.email, data.password)
       .then((result) => {
-        console.log(result);
+        console.log(result.user);
+
         // store the image and get the photo url:
         const formData = new FormData();
         formData.append("image", profileImg);
 
         const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
 
-        axios.post(image_API_URL, formData)
-        .then(res =>{
-            console.log(res.data.data.url);
+        axios.post(image_API_URL, formData).then((res) => {
+          console.log(res.data.data.url);
 
-            const photoURL= res.data.data.url;
+          const photoURL = res.data.data.url;
 
-            const userInfo = {
-                email: data.email,
-                displayName: data.name,
-                photoURL: photoURL
+          const userInfo = {
+            email: data.email,
+            displayName: data.name,
+            photoURL: photoURL,
+          };
+
+          // user data save on database
+          axiosSecure.post("/users", userInfo).then((res) => {
+            if (res.data.insertedId) {
+              console.log("User created in the database");
             }
+          });
 
-            // user data save on database
-            axiosSecure.post('/users', userInfo)
-            .then(res =>{
-                if(res.data.insertedId){
-                    console.log("User created in the database");
-                }
-            })  
+          // update user profile:
+          const userProfile = {
+            displayName: data.name,
+            photoURL: photoURL,
+          };
 
-            // update user profile:
-            const userProfile = {
-                displayName: data.name,
-                photoURL: photoURL
-            }
+          updateUserProfile(userProfile)
+            .then(() => {
+              console.log("User profile updated!!!");
+              // 🔥 register modal close
+              setShowRegisterModal(false);
 
-            updateUserProfile(userProfile)
-            .then( () => {
-                console.log('User profile updated!!!');
+              // 🔥 reset pending booking
+              setPendingBooking(false);
             })
-            .catch(error => {
-                console.error(error);
-            })
-        })
+            .catch((error) => {
+              console.error(error);
+            });
+        });
       })
       .catch((error) => {
         console.error(error);

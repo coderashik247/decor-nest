@@ -42,7 +42,7 @@ const AuthProvider = ({children}) => {
         return () => {
             unSubscribe();
         }
-    })
+    }, []);
 
     const authInfo = {
         user, 
@@ -54,9 +54,9 @@ const AuthProvider = ({children}) => {
         updateUserProfile
     }
     return (
-        <AuthContext value={authInfo}>
+        <AuthContext.Provider value={authInfo}>
             {children}
-        </AuthContext >
+        </AuthContext.Provider >
     );
 };
 
