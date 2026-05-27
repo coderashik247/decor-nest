@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   FaStar,
   FaCheckCircle,
@@ -16,11 +16,15 @@ import servicesData from "../../utility/servicesData";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import useAuthModal from "../../hooks/useAuthModal";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const ServicesDetails = () => {
   const { serviceId } = useParams();
   const { user } = useAuth();
-  const {setShowLoginModal, pendingBooking, setPendingBooking } = useAuthModal();
+  const axiosSecure = useAxiosSecure();
+  const { setShowLoginModal, pendingBooking, setPendingBooking } =
+    useAuthModal();
 
   const {
     register,
@@ -34,7 +38,7 @@ const ServicesDetails = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const handleBooking = (data) => {
+  const handleBooking = async (data) => {
     const bookingInfo = {
       userName: user.displayName,
       userEmail: user.email,
@@ -49,29 +53,47 @@ const ServicesDetails = () => {
       location: data.location,
       serviceMode: data.serviceMode,
 
-      status: "pending",
-      createdAt: new Date(),
+      paymentStatus: "unpaid",
+      bookingStatus: "pending",
     };
 
     console.log(bookingInfo);
 
-    alert("Booking Successful!");
-
-    setShowModal(false);
+    Swal.fire({
+      title: "Confirm Booking?",
+      text: "Do you want to confirm this decoration booking?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm Booking",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.post("/bookings", bookingInfo).then((res) => {
+          if (res.data.insertedId) {
+            Swal.fire({
+              title: "Booking Successful!",
+              text: "Your decoration booking has been confirmed.",
+              icon: "success",
+            });
+            setShowModal(false);
+          }
+        });
+      }
+    });
   };
 
-  const handleBookNow = () =>{
-    if(user){
-      setShowModal(true)
-    }
-    else{
+  const handleBookNow = () => {
+    if (user) {
+      setShowModal(true);
+    } else {
       setPendingBooking(true);
       setShowLoginModal(true);
     }
-  }
+  };
 
   useEffect(() => {
-    if(user && pendingBooking){
+    if (user && pendingBooking) {
       setShowModal(true);
       setPendingBooking(false);
     }
