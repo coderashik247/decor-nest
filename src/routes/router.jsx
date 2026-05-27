@@ -6,6 +6,9 @@ import Coverage from "../pages/Home/Coverage/Coverage";
 import ServicesDetails from "../pages/ServicesDetails/ServicesDetails";
 import { Component } from "react";
 import ErrorPage from "../components/ErrorPage/ErrorPage";
+import PrivateRoute from "./PrivateRoute";
+import DashboardLayout from "../layouts/DashboardLayout";
+import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 
 export const router = createBrowserRouter([
   {
@@ -31,4 +34,15 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: 'dashboard',
+    element: <PrivateRoute> <DashboardLayout></DashboardLayout> </PrivateRoute>,
+    children: [
+        {
+            path: 'my-bookings',
+            Component: MyBookings
+        }
+    ]
+    
+  }
 ]);
