@@ -10,13 +10,14 @@ import {
   FaCheckCircle,
   FaTimesCircle,
 } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const MyBookings = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ["my-booking", user?.email],
+    queryKey: ["my-bookings", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/bookings?email=${user.email}`);
@@ -24,11 +25,41 @@ const MyBookings = () => {
     },
   });
 
+  const handlePay = async (booking) => {
+    try {
+      const paymentInfo = {
+        bookingId: booking._id,
+        serviceName: booking.serviceName,
+        amount: booking.servicePrice,
+        customerEmail: booking.userEmail,
+      };
+      const res = await axiosSecure.post(
+        "/create-checkout-session",
+        paymentInfo,
+      );
+      if (res.data.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (error) {
+      console.error(error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Payment Failed",
+        text: "Something went wrong!",
+      });
+    }
+  };
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "pending":
         return "badge-warning";
-      case "approved":
+      case "paid":
+        return "badge-success";
+      case "assigned":
+        return "badge-info";
+      case "completed":
         return "badge-success";
       case "cancelled":
         return "badge-error";
@@ -136,7 +167,12 @@ const MyBookings = () => {
                         Paid
                       </span>
                     ) : (
-                      <button className="btn btn-primary btn-sm">Pay</button>
+                      <button
+                        onClick={() => handlePay(booking)}
+                        className="btn btn-primary btn-sm"
+                      >
+                        Pay
+                      </button>
                     )}
                   </td>
 
@@ -155,7 +191,7 @@ const MyBookings = () => {
                         <FaTimesCircle />
                       )}
 
-                      {booking.bookingStatus || "pending"}
+                      {booking.bookingStatus ?? "pending"}
                     </span>
                   </td>
                 </tr>

@@ -9,6 +9,7 @@ import ErrorPage from "../components/ErrorPage/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
+import PaymentSuccess from "../pages/Dashboard/PaymentSuccess/PaymentSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
         {
             path: 'my-bookings',
             Component: MyBookings
+        },
+        {
+            path: 'payment-success',
+            Component: PaymentSuccess
         }
     ]
     
