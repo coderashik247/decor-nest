@@ -8,16 +8,21 @@ import {
   FaBell,
   FaSearch,
   FaArrowLeft,
+  FaMoneyBillWave,
+  FaClipboardList,
+  FaUserShield,
 } from "react-icons/fa";
 
 import LogoNavbar from "../assets/decor_nest_logo2_.png";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
+import useRole from "../hooks/useRole";
 
 const DashboardLayout = () => {
   const axiosSecure = useAxiosSecure();
   const { user, logOut } = useAuth(); // assuming logOut exists
+  const [role] = useRole();
 
   const roleLabel = {
     user: "Customer",
@@ -36,8 +41,7 @@ const DashboardLayout = () => {
 
   // FIND CURRENT USER (safe compare)
   const currentUser = users.find(
-    (u) =>
-      u.email?.toLowerCase() === user?.email?.toLowerCase()
+    (u) => u.email?.toLowerCase() === user?.email?.toLowerCase(),
   );
 
   const navLinkClass = ({ isActive }) =>
@@ -61,11 +65,9 @@ const DashboardLayout = () => {
 
       {/* MAIN CONTENT */}
       <div className="drawer-content flex flex-col">
-
         {/* TOP NAVBAR */}
         <div className="sticky top-0 z-40 bg-base-100/80 backdrop-blur-xl border-b border-base-300">
           <div className="navbar px-4 lg:px-8 h-20">
-
             {/* LEFT */}
             <div className="navbar-start gap-3">
               <label
@@ -87,7 +89,6 @@ const DashboardLayout = () => {
 
             {/* RIGHT */}
             <div className="navbar-end gap-3">
-
               {/* SEARCH */}
               <div className="hidden md:flex items-center bg-base-200 rounded-2xl px-4 h-12 w-72">
                 <FaSearch className="text-base-content/40" />
@@ -105,7 +106,6 @@ const DashboardLayout = () => {
 
               {/* USER */}
               <div className="flex items-center gap-3 bg-base-200 rounded-2xl px-3 py-2">
-
                 <div className="avatar">
                   <div className="w-11 rounded-2xl border-2 border-primary">
                     <img
@@ -121,19 +121,15 @@ const DashboardLayout = () => {
 
                 <div className="hidden md:block leading-tight">
                   <h3 className="font-semibold text-sm">
-                    {currentUser?.displayName ||
-                      user?.displayName ||
-                      "User"}
+                    {currentUser?.displayName || user?.displayName || "User"}
                   </h3>
 
                   <p className="text-xs text-base-content/50 capitalize">
                     {roleLabel[currentUser?.role] || "Customer"}
                   </p>
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
 
@@ -143,7 +139,6 @@ const DashboardLayout = () => {
             <Outlet />
           </div>
         </div>
-
       </div>
 
       {/* SIDEBAR */}
@@ -151,7 +146,6 @@ const DashboardLayout = () => {
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
 
         <aside className="w-80 bg-base-100 border-r border-base-300 min-h-screen flex flex-col">
-
           {/* LOGO */}
           <div className="h-20 flex items-center px-6 border-b border-base-300">
             <div className="flex items-center gap-4">
@@ -174,13 +168,11 @@ const DashboardLayout = () => {
 
           {/* MENU */}
           <div className="flex-1 px-4 py-6">
-
             <p className="text-xs uppercase tracking-[4px] text-base-content/40 px-4 mb-5">
               Main Menu
             </p>
 
             <ul className="space-y-2">
-
               <li>
                 <NavLink to="/" className={navLinkClass}>
                   <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
@@ -200,6 +192,46 @@ const DashboardLayout = () => {
               </li>
 
               <li>
+                <NavLink
+                  to="/dashboard/payment-history"
+                  className={navLinkClass}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                    <FaMoneyBillWave />
+                  </div>
+                  <span>Payment History</span>
+                </NavLink>
+              </li>
+
+              {/* Admin Rotues only */}
+              {role === "admin" && (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dashboard/manage-bookings"
+                      className={navLinkClass}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                        <FaClipboardList />
+                      </div>
+                      <span>Manage Bookings</span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dashboard/user-management"
+                      className={navLinkClass}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                        <FaUserShield />
+                      </div>
+                      <span>User Management</span>
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
+              <li>
                 <NavLink to="/dashboard/settings" className={navLinkClass}>
                   <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
                     <FaCog />
@@ -207,9 +239,7 @@ const DashboardLayout = () => {
                   <span>Settings</span>
                 </NavLink>
               </li>
-
             </ul>
-
           </div>
 
           {/* LOGOUT */}
@@ -222,10 +252,8 @@ const DashboardLayout = () => {
               Logout
             </button>
           </div>
-
         </aside>
       </div>
-
     </div>
   );
 };

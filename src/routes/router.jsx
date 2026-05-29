@@ -10,6 +10,10 @@ import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import PaymentSuccess from "../pages/Dashboard/PaymentSuccess/PaymentSuccess";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import ManageBookings from "../pages/Dashboard/Admin/ManageBookings/ManageBookings";
+import AdminRoute from "./AdminRoute";
+import UserManagement from "../pages/Dashboard/Admin/UserManagement/UserManagement";
 
 export const router = createBrowserRouter([
   {
@@ -46,7 +50,20 @@ export const router = createBrowserRouter([
         {
             path: 'payment-success',
             Component: PaymentSuccess
-        }
+        },
+        {
+            path: 'payment-history',
+            Component: PaymentHistory
+        },
+        // Admin routes only
+        {
+            path: 'manage-bookings',
+            element: <AdminRoute> <ManageBookings></ManageBookings> </AdminRoute>
+        },
+        {
+            path: 'user-management',
+            element: <AdminRoute> <UserManagement></UserManagement> </AdminRoute>
+        },
     ]
     
   }

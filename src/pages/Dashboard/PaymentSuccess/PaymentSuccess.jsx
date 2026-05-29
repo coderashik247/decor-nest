@@ -33,7 +33,7 @@ const PaymentSuccess = () => {
 
           setTimeout(() => {
             navigate("/dashboard/my-bookings");
-          }, 8000);
+          }, 10000);
         }
       })
       .catch((error) => {
@@ -43,74 +43,76 @@ const PaymentSuccess = () => {
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4 py-10">
-      <div className="max-w-2xl w-full bg-base-100 rounded-4xl shadow-2xl border border-base-300 overflow-hidden">
+      <div className="max-w-2xl w-full bg-base-100 rounded-3xl shadow-2xl border border-base-300 overflow-hidden">
 
-        {/* Top Banner */}
-        <div className="bg-linear-to-r from-green-500 to-emerald-600 text-white text-center py-10 px-6">
-          <div className="w-40 mx-auto">
+        {/* TOP BANNER */}
+        <div className="bg-secondary text-secondary-content text-center py-10 px-6 border-b border-base-300">
+
+          <div className="w-36 mx-auto bg-base-100/10 rounded-full p-3 shadow-soft">
             <Lottie animationData={successAnimation} loop={false} />
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-black mt-2">
+          <h1 className="text-4xl md:text-5xl font-black mt-4">
             Payment Successful
           </h1>
 
-          <p className="mt-3 text-white/80">
+          <p className="mt-3 text-secondary-content/70">
             Thank you for choosing DecorNest.
           </p>
         </div>
 
-        {/* Content */}
+        {/* CONTENT */}
         <div className="p-8">
 
           <div className="grid md:grid-cols-2 gap-5">
 
+            {/* Transaction ID */}
             <div className="bg-base-200 rounded-2xl p-5">
               <p className="text-sm text-base-content/60">
                 Transaction ID
               </p>
-
               <h3 className="font-bold break-all mt-1">
                 {paymentInfo?.transactionId}
               </h3>
             </div>
 
+            {/* Amount */}
             <div className="bg-base-200 rounded-2xl p-5">
               <p className="text-sm text-base-content/60">
                 Amount Paid
               </p>
-
-              <h3 className="font-bold text-success text-2xl mt-1">
+              <h3 className="font-bold text-primary text-2xl mt-1">
                 ৳ {paymentInfo?.amount}
               </h3>
             </div>
 
+            {/* Email */}
             <div className="bg-base-200 rounded-2xl p-5">
               <p className="text-sm text-base-content/60">
                 Customer Email
               </p>
-
               <h3 className="font-semibold mt-1">
                 {paymentInfo?.customerEmail}
               </h3>
             </div>
 
+            {/* Status */}
             <div className="bg-base-200 rounded-2xl p-5">
               <p className="text-sm text-base-content/60">
                 Payment Status
               </p>
 
-              <span className="badge badge-success badge-lg mt-2">
+              <span className="badge bg-primary text-primary-content badge-lg mt-2 border-0">
                 Paid
               </span>
             </div>
 
           </div>
 
-          {/* Success Message */}
-          <div className="mt-8 bg-success/10 border border-success/20 rounded-2xl p-5">
+          {/* SUCCESS MESSAGE */}
+          <div className="mt-8 bg-accent border border-base-300 rounded-2xl p-5">
 
-            <h3 className="text-xl font-bold text-success mb-2">
+            <h3 className="text-xl font-bold text-primary mb-2">
               Booking Confirmed 🎉
             </h3>
 
@@ -121,19 +123,19 @@ const PaymentSuccess = () => {
 
           </div>
 
-          {/* Buttons */}
+          {/* BUTTONS */}
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
 
             <Link
               to="/dashboard/my-bookings"
-              className="btn btn-primary flex-1 rounded-2xl"
+              className="btn btn-primary flex-1 rounded-2xl shadow-soft"
             >
               View My Bookings
             </Link>
 
             <Link
               to="/"
-              className="btn btn-outline flex-1 rounded-2xl"
+              className="btn btn-outline btn-neutral flex-1 rounded-2xl"
             >
               Back To Home
             </Link>
