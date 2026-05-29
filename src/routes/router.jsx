@@ -14,6 +14,8 @@ import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import ManageBookings from "../pages/Dashboard/Admin/ManageBookings/ManageBookings";
 import AdminRoute from "./AdminRoute";
 import UserManagement from "../pages/Dashboard/Admin/UserManagement/UserManagement";
+import BecomeADecorator from "../pages/BecomeADecorator/BecomeADecorator";
+import AddService from "../pages/Dashboard/Admin/AddService/AddService";
 
 export const router = createBrowserRouter([
   {
@@ -32,39 +34,67 @@ export const router = createBrowserRouter([
       {
         path: "/services/:serviceId",
         Component: ServicesDetails,
+        loader: () => fetch("serviceCenters.json").then((res) => res.json()),
       },
       {
         path: "/coverage",
         element: <Coverage></Coverage>,
       },
+      {
+        path: "/become-a-decorator",
+        Component: BecomeADecorator,
+        loader: () => fetch("serviceCenters.json").then((res) => res.json()),
+      },
     ],
   },
   {
-    path: 'dashboard',
-    element: <PrivateRoute> <DashboardLayout></DashboardLayout> </PrivateRoute>,
+    path: "dashboard",
+    element: (
+      <PrivateRoute>
+        {" "}
+        <DashboardLayout></DashboardLayout>{" "}
+      </PrivateRoute>
+    ),
     children: [
-        {
-            path: 'my-bookings',
-            Component: MyBookings
-        },
-        {
-            path: 'payment-success',
-            Component: PaymentSuccess
-        },
-        {
-            path: 'payment-history',
-            Component: PaymentHistory
-        },
-        // Admin routes only
-        {
-            path: 'manage-bookings',
-            element: <AdminRoute> <ManageBookings></ManageBookings> </AdminRoute>
-        },
-        {
-            path: 'user-management',
-            element: <AdminRoute> <UserManagement></UserManagement> </AdminRoute>
-        },
-    ]
-    
-  }
+      {
+        path: "my-bookings",
+        Component: MyBookings,
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccess,
+      },
+      {
+        path: "payment-history",
+        Component: PaymentHistory,
+      },
+      // Admin routes only
+      {
+        path: "add-service",
+        element: (
+          <AdminRoute>
+            <AddService></AddService>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-bookings",
+        element: (
+          <AdminRoute>
+            {" "}
+            <ManageBookings></ManageBookings>{" "}
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "user-management",
+        element: (
+          <AdminRoute>
+            {" "}
+            <UserManagement></UserManagement>{" "}
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 ]);

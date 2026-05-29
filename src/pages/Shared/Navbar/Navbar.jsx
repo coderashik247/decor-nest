@@ -5,6 +5,7 @@ import LoginModal from "../../Auth/LoginModal/LoginModal";
 import RegisterModal from "../../Auth/RegisterModal/RegisterModal";
 import useAuth from "../../../hooks/useAuth";
 import useAuthModal from "../../../hooks/useAuthModal";
+import { FaChartPie, FaPaintRoller, FaRightFromBracket } from "react-icons/fa6";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -216,23 +217,29 @@ const Navbar = () => {
                       to="/dashboard"
                       className="flex items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-primary/10 transition-all duration-300"
                     >
-                      <span className="text-lg">📊</span>
+                      <span className="text-lg">
+                        <FaChartPie color="#D4B06A" />
+                      </span>
                       Dashboard
                     </NavLink>
 
                     <NavLink
-                      to="/my-bookings"
+                      to="/become-a-decorator"
                       className="flex items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-primary/10 transition-all duration-300"
                     >
-                      <span className="text-lg">📅</span>
-                      My Bookings
+                      <span className="text-lg">
+                         <FaPaintRoller color="#D4B06A" />
+                      </span>
+                      Become A Decorator
                     </NavLink>
 
                     <button
                       onClick={handleLogOut}
                       className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-error hover:text-white transition-all duration-300"
                     >
-                      <span className="text-lg">🚪</span>
+                      <span className="text-lg">
+                        <FaRightFromBracket/>
+                      </span>
                       Logout
                     </button>
                   </div>

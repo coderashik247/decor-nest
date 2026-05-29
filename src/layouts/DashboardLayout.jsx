@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import {
   FaHome,
   FaCalendarCheck,
@@ -147,7 +147,7 @@ const DashboardLayout = () => {
 
         <aside className="w-80 bg-base-100 border-r border-base-300 min-h-screen flex flex-col">
           {/* LOGO */}
-          <div className="h-20 flex items-center px-6 border-b border-base-300">
+          <Link to="/" className="h-20 flex items-center px-6 border-b border-base-300">
             <div className="flex items-center gap-4">
               <img
                 src={LogoNavbar}
@@ -164,7 +164,7 @@ const DashboardLayout = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* MENU */}
           <div className="flex-1 px-4 py-6">
@@ -208,6 +208,18 @@ const DashboardLayout = () => {
                 <>
                   <li>
                     <NavLink
+                      to="/dashboard/add-service"
+                      className={navLinkClass}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                        <FaClipboardList />
+                      </div>
+                      <span>Add Service</span>
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
                       to="/dashboard/manage-bookings"
                       className={navLinkClass}
                     >
@@ -217,6 +229,7 @@ const DashboardLayout = () => {
                       <span>Manage Bookings</span>
                     </NavLink>
                   </li>
+
                   <li>
                     <NavLink
                       to="/dashboard/user-management"
