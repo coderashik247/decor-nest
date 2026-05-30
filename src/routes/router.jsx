@@ -16,6 +16,7 @@ import AdminRoute from "./AdminRoute";
 import UserManagement from "../pages/Dashboard/Admin/UserManagement/UserManagement";
 import BecomeADecorator from "../pages/BecomeADecorator/BecomeADecorator";
 import AddService from "../pages/Dashboard/Admin/AddService/AddService";
+import ApproveDecorators from "../pages/Dashboard/Admin/ApproveDecorators/ApproveDecorators";
 
 export const router = createBrowserRouter([
   {
@@ -74,6 +75,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AddService></AddService>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "approve-decorators",
+        element: (
+          <AdminRoute>
+            <ApproveDecorators></ApproveDecorators>
           </AdminRoute>
         ),
       },

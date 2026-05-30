@@ -63,7 +63,8 @@ const ServicesDetails = () => {
 
       bookingDate: data.bookingDate,
       bookingTime: data.bookingTime,
-      location: data.location,
+      bookingRegion: data.region,
+      bookingDistrict: data.district,
       serviceMode: data.serviceMode,
 
       paymentStatus: "unpaid",

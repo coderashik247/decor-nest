@@ -131,9 +131,7 @@ const AddService = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 p-6 lg:p-10">
-      <div className="max-w-7xl mx-auto">
-
+    <div className="bg-base-200 p-4 lg:p-6">
         {/* HEADER */}
         <div className="bg-linear-to-r from-secondary to-slate-800 rounded-3xl p-8 mb-8 text-white shadow-xl">
           <h1 className="text-4xl font-bold">
@@ -457,7 +455,7 @@ const AddService = () => {
           </div>
 
         </div>
-      </div>
+
     </div>
   );
 };

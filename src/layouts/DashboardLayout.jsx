@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
+import { MdOutlineAddBusiness } from "react-icons/md";
 
 const DashboardLayout = () => {
   const axiosSecure = useAxiosSecure();
@@ -212,9 +213,21 @@ const DashboardLayout = () => {
                       className={navLinkClass}
                     >
                       <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
-                        <FaClipboardList />
+                        <MdOutlineAddBusiness  />
                       </div>
                       <span>Add Service</span>
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="/dashboard/approve-decorators"
+                      className={navLinkClass}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                        <MdOutlineAddBusiness  />
+                      </div>
+                      <span>Approve Decorators</span>
                     </NavLink>
                   </li>
 

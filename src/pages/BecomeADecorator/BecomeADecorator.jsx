@@ -52,7 +52,10 @@ const BecomeADecorator = () => {
     );
 
     const data = await res.json();
-    return data.data.url;
+
+    console.log("IMGBB RESPONSE:", data);
+
+    return data.data.display_url;
   };
 
   const handleApply = async (data) => {
@@ -251,11 +254,12 @@ const BecomeADecorator = () => {
               />
             </div>
 
-                        {/* IMAGE */}
+            {/* IMAGE */}
             <div>
               <label className="label font-semibold">
                 <IoIosImages />
-                Team Image</label>
+                Team Image
+              </label>
 
               <input
                 type="file"
