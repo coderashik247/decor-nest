@@ -20,6 +20,7 @@ import ApproveDecorators from "../pages/Dashboard/Admin/ApproveDecorators/Approv
 import DecoratorRoute from "./DecoratorRoute";
 import AssignedProjects from "../pages/Dashboard/DecoratorDashboard/AssignedProjects/AssignedProjects";
 import CompletedProjects from "../pages/Dashboard/DecoratorDashboard/CompletedProjects/CompletedProjects";
+import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
+      {
+        index: true,
+        Component: DashboardHome
+      },
       {
         path: "my-bookings",
         Component: MyBookings,
