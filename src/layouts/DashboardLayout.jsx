@@ -148,7 +148,10 @@ const DashboardLayout = () => {
 
         <aside className="w-80 bg-base-100 border-r border-base-300 min-h-screen flex flex-col">
           {/* LOGO */}
-          <Link to="/" className="h-20 flex items-center px-6 border-b border-base-300">
+          <Link
+            to="/"
+            className="h-20 flex items-center px-6 border-b border-base-300"
+          >
             <div className="flex items-center gap-4">
               <img
                 src={LogoNavbar}
@@ -204,6 +207,34 @@ const DashboardLayout = () => {
                 </NavLink>
               </li>
 
+              {/* Decorator Routes only */}
+              {role === "decorator" && (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dashboard/assigned-projects"
+                      className={navLinkClass}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                        <MdOutlineAddBusiness />
+                      </div>
+                      <span>Assigned Projects</span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dashboard/completed-projects"
+                      className={navLinkClass}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
+                        <MdOutlineAddBusiness />
+                      </div>
+                      <span>Completed Projects</span>
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
               {/* Admin Rotues only */}
               {role === "admin" && (
                 <>
@@ -213,7 +244,7 @@ const DashboardLayout = () => {
                       className={navLinkClass}
                     >
                       <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
-                        <MdOutlineAddBusiness  />
+                        <MdOutlineAddBusiness />
                       </div>
                       <span>Add Service</span>
                     </NavLink>
@@ -225,7 +256,7 @@ const DashboardLayout = () => {
                       className={navLinkClass}
                     >
                       <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center">
-                        <MdOutlineAddBusiness  />
+                        <MdOutlineAddBusiness />
                       </div>
                       <span>Approve Decorators</span>
                     </NavLink>

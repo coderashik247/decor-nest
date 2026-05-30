@@ -27,7 +27,8 @@ const ManageBookings = () => {
   } = useQuery({
     queryKey: ["bookings", "pending"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/bookings?bookingStatus=pending");
+      const res = await axiosSecure.get("/bookings?bookingStatus=confirmed");
+      console.log(res.data);
       return res.data;
     },
   });
@@ -63,7 +64,7 @@ const ManageBookings = () => {
   // ASSIGN DECORATOR
   const handleAssignDecorator = async (decorator) => {
     try {
-      const res = await axiosSecure.patch(`/bookings/${selectedBooking._id}`, {
+      const res = await axiosSecure.patch(`/bookings/${selectedBooking._id}/assign-decorator`, {
         decoratorId: decorator._id,
         decoratorName: decorator.name,
         decoratorEmail: decorator.email,
@@ -143,7 +144,7 @@ const ManageBookings = () => {
   return (
     <div className="space-y-6">
       {/* HEADER */}
-      <div className="bg-base-100 border rounded-2xl p-6 shadow-lg flex justify-between items-center">
+      <div className="bg-base-100 rounded-2xl p-6 shadow-lg flex justify-between items-center">
         <div className="flex items-center gap-4">
           <FaCalendarCheck size={28} className="text-primary" />
           <div>
@@ -172,7 +173,7 @@ const ManageBookings = () => {
 
       {/* TABLE */}
       {bookings.length > 0 && (
-        <div className="bg-base-100 border rounded-2xl overflow-hidden shadow-lg">
+        <div className="bg-base-100 b rounded-2xl overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
             <table className="table">
               <thead className="bg-secondary text-white">

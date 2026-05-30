@@ -38,9 +38,9 @@ const ApproveDecorators = () => {
     };
 
     axiosSecure
-      .patch(`/decorators/${decorator._id}/status`, updateInfo)
+      .patch(`/decorators/${decorator._id}`, updateInfo)
       .then((res) => {
-        if (res.data.modifiedCount) {
+        if (res.data.success) {
           refetch();
 
           Swal.fire({
@@ -51,6 +51,15 @@ const ApproveDecorators = () => {
             timer: 2000,
           });
         }
+      })
+      .catch((error) => {
+        console.error(error);
+
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: error.message,
+        });
       });
   };
 

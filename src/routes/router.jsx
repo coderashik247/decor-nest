@@ -17,6 +17,9 @@ import UserManagement from "../pages/Dashboard/Admin/UserManagement/UserManageme
 import BecomeADecorator from "../pages/BecomeADecorator/BecomeADecorator";
 import AddService from "../pages/Dashboard/Admin/AddService/AddService";
 import ApproveDecorators from "../pages/Dashboard/Admin/ApproveDecorators/ApproveDecorators";
+import DecoratorRoute from "./DecoratorRoute";
+import AssignedProjects from "../pages/Dashboard/DecoratorDashboard/AssignedProjects/AssignedProjects";
+import CompletedProjects from "../pages/Dashboard/DecoratorDashboard/CompletedProjects/CompletedProjects";
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +72,16 @@ export const router = createBrowserRouter([
         path: "payment-history",
         Component: PaymentHistory,
       },
+      // Decorator routes only
+      {
+        path: "assigned-projects",
+        element: <DecoratorRoute> <AssignedProjects></AssignedProjects> </DecoratorRoute>
+      },
+      {
+        path: "completed-projects",
+        element: <DecoratorRoute> <CompletedProjects></CompletedProjects> </DecoratorRoute>
+      },
+
       // Admin routes only
       {
         path: "add-service",
