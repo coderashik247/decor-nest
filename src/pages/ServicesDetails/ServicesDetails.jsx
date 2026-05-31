@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import {
   FaStar,
   FaCheckCircle,
@@ -23,6 +23,7 @@ const ServicesDetails = () => {
   const { serviceId } = useParams();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const { setShowLoginModal, pendingBooking, setPendingBooking } =
     useAuthModal();
 
@@ -91,6 +92,7 @@ const ServicesDetails = () => {
               icon: "success",
             });
             setShowModal(false);
+            navigate("/dashboard/my-bookings")
           }
         });
       }

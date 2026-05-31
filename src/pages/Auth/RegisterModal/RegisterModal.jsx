@@ -12,6 +12,7 @@ import useAuth from "../../../hooks/useAuth";
 import axios from "axios";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuthModal from "../../../hooks/useAuthModal";
+import { useNavigate } from "react-router-dom";
 
 const RegisterModal = () => {
   const {
@@ -24,6 +25,7 @@ const RegisterModal = () => {
   const { setShowRegisterModal, setShowLoginModal, setPendingBooking } =
     useAuthModal();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const handleRegistration = (data) => {
     const profileImg = data.photo[0];
@@ -69,6 +71,8 @@ const RegisterModal = () => {
 
               // 🔥 reset pending booking
               setPendingBooking(false);
+
+              navigate("/");
             })
             .catch((error) => {
               console.error(error);

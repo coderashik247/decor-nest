@@ -5,23 +5,7 @@ const ServiceCard = ({ servicesData }) => {
   return (
     <section className="py-16">
 
-      {/* HEADER */}
-      <div className="text-center max-w-3xl mx-auto mb-14">
-
-        <p className="text-primary uppercase tracking-[4px] text-sm font-semibold mb-4">
-          Premium Decoration Services
-        </p>
-
-        <h2 className="text-4xl md:text-6xl font-bold text-neutral mb-6 leading-tight">
-          Crafted For Elegant Celebrations
-        </h2>
-
-        <p className="text-neutral/70 text-sm md:text-lg leading-8">
-          Explore luxurious decoration services designed for weddings, birthdays,
-          corporate events, and unforgettable premium experiences.
-        </p>
-
-      </div>
+    
 
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
