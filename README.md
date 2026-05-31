@@ -1,12 +1,72 @@
-# React + Vite
+# 🏠 StyleDecor – Smart Home & Ceremony Decoration Booking System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🌐 Live Links
+- 🎨 Client: https://decor-nest.vercel.app
+- ⚙️ Server: [https://your-server-live-link.com](https://decor-nest-server.onrender.com)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 Project Overview
 
-## Expanding the ESLint configuration
+StyleDecor is a modern full-stack decoration booking platform designed for home, office, and ceremony decoration services. It allows users to browse services, book appointments, make payments, and track service progress in real time.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The system includes role-based dashboards for Users, Admins, and Decorators, making it a complete real-world service management solution.
+
+---
+
+## 🚀 Key Features
+
+### 👤 User Features
+- Firebase Authentication (Email/Password + Social Login)
+- Browse decoration services & packages
+- Search & filter services by category and budget
+- Book services with date and location
+- Stripe payment integration
+- View booking history
+- Cancel or update bookings
+
+### 🛠 Admin Features
+- Full CRUD for services & packages
+- Manage decorators (create/update/delete)
+- Assign decorators to bookings
+- Approve or disable decorators
+- Revenue tracking system
+- Analytics dashboard with charts
+
+### 🎨 Decorator Features
+- View assigned projects
+- Update project status:
+  Assigned → Planning → Materials Ready → On the Way → Setup → Completed
+- View earnings summary
+- Manage daily schedule
+
+---
+
+## 🧱 Tech Stack
+
+### Frontend
+- React 19
+- Vite 7
+- TailwindCSS 4
+- DaisyUI 5
+- React Router DOM
+- React Query (TanStack Query)
+- Axios
+- React Hook Form
+- Recharts
+- React Leaflet
+- Swiper
+- SweetAlert2
+- Lottie React
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Firebase Admin SDK
+- JWT Authentication
+- Stripe Payment Gateway
+- CORS
+- Dotenv
+
+---
