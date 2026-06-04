@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
@@ -30,7 +29,9 @@ const AddService = () => {
   const watchedDescription = watch("description");
   const watchedUnit = watch("unit");
 
-  const imageHostingKey = import.meta.env.VITE_IMGBB_API_KEY;
+  const imageHostingKey = import.meta.env.VITE_image_host_key;
+  console.log(import.meta.env);
+  console.log(import.meta.env.VITE_image_host_key);
 
   const previewService = {
     service_name: watchedName || "Luxury Wedding Decoration",
@@ -68,10 +69,11 @@ const AddService = () => {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const result = await response.json();
+    console.log(result);
 
     if (!result.success) {
       throw new Error("Image upload failed");
@@ -85,9 +87,7 @@ const AddService = () => {
 
     try {
       const uploadedImages = await Promise.all(
-        images
-          .filter((img) => img !== null)
-          .map((img) => uploadImage(img))
+        images.filter((img) => img !== null).map((img) => uploadImage(img)),
       );
 
       const serviceData = {
@@ -132,47 +132,43 @@ const AddService = () => {
 
   return (
     <div className="bg-base-200 p-4 lg:p-6">
-        {/* HEADER */}
-        <div className="bg-linear-to-r from-secondary to-slate-800 rounded-3xl p-8 mb-8 text-white shadow-xl">
-          <h1 className="text-4xl font-bold">
-            Create Decoration Service
-          </h1>
+      {/* HEADER */}
+      <div className="bg-linear-to-r from-secondary to-slate-800 rounded-3xl p-8 mb-8 text-white shadow-xl">
+        <h1 className="text-4xl font-bold">Create Decoration Service</h1>
 
-          <p className="mt-2 text-white/70">
-            Showcase your premium decoration expertise.
-          </p>
-        </div>
+        <p className="mt-2 text-white/70">
+          Showcase your premium decoration expertise.
+        </p>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* FORM */}
+        <div className="lg:col-span-2">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="bg-base-100 rounded-3xl border border-base-300 shadow-xl overflow-hidden"
+          >
+            <div className="bg-accent px-8 py-6 border-b border-base-300">
+              <h2 className="text-2xl font-semibold text-secondary">
+                Service Information
+              </h2>
 
-          {/* FORM */}
-          <div className="lg:col-span-2">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="bg-base-100 rounded-3xl border border-base-300 shadow-xl overflow-hidden"
-            >
-              <div className="bg-accent px-8 py-6 border-b border-base-300">
-                <h2 className="text-2xl font-semibold text-secondary">
-                  Service Information
-                </h2>
+              <p className="text-neutral/60 mt-1">
+                Fill all service details carefully.
+              </p>
+            </div>
 
-                <p className="text-neutral/60 mt-1">
-                  Fill all service details carefully.
-                </p>
-              </div>
+            <div className="p-8">
+              {/* IMAGE UPLOAD */}
+              <h3 className="font-semibold text-lg mb-4 text-secondary">
+                Service Gallery
+              </h3>
 
-              <div className="p-8">
-
-                {/* IMAGE UPLOAD */}
-                <h3 className="font-semibold text-lg mb-4 text-secondary">
-                  Service Gallery
-                </h3>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                  {images.map((img, index) => (
-                    <label
-                      key={index}
-                      className="
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                {images.map((img, index) => (
+                  <label
+                    key={index}
+                    className="
                         h-25
                         rounded-2xl
                         border-2
@@ -188,167 +184,157 @@ const AddService = () => {
                         items-center
                         justify-center
                       "
-                    >
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) =>
-                          handleImageChange(
-                            index,
-                            e.target.files?.[0]
-                          )
-                        }
+                  >
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleImageChange(index, e.target.files?.[0])
+                      }
+                    />
+
+                    {preview[index] ? (
+                      <img
+                        src={preview[index]}
+                        alt="preview"
+                        className="w-full h-full object-cover"
                       />
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <BsCloudUpload size={40} className="text-primary" />
 
-                      {preview[index] ? (
-                        <img
-                          src={preview[index]}
-                          alt="preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex flex-col items-center">
-                          <BsCloudUpload
-                            size={40}
-                            className="text-primary"
-                          />
-
-                          <span className="text-sm mt-2 text-neutral/60">
-                            Upload
-                          </span>
-                        </div>
-                      )}
-                    </label>
-                  ))}
-                </div>
-
-                {/* FORM FIELDS */}
-                <div className="grid md:grid-cols-2 gap-6">
-
-                  <div>
-                    <label className="font-medium text-sm mb-2 block">
-                      Service Name
-                    </label>
-
-                    <input
-                      {...register("service_name", {
-                        required: "Service name is required",
-                      })}
-                      placeholder="Wedding Decoration"
-                      className="input input-bordered w-full"
-                    />
-
-                    {errors.service_name && (
-                      <p className="text-error text-sm mt-1">
-                        {errors.service_name.message}
-                      </p>
+                        <span className="text-sm mt-2 text-neutral/60">
+                          Upload
+                        </span>
+                      </div>
                     )}
-                  </div>
+                  </label>
+                ))}
+              </div>
 
-                  <div>
-                    <label className="font-medium text-sm mb-2 block">
-                      Cost
-                    </label>
-
-                    <input
-                      {...register("cost", {
-                        required: "Cost is required",
-                      })}
-                      type="number"
-                      placeholder="15000"
-                      className="input input-bordered w-full"
-                    />
-
-                    {errors.cost && (
-                      <p className="text-error text-sm mt-1">
-                        {errors.cost.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="font-medium text-sm mb-2 block">
-                      Category
-                    </label>
-
-                    <input
-                      {...register("category", {
-                        required: "Category is required",
-                      })}
-                      placeholder="Wedding"
-                      className="input input-bordered w-full"
-                    />
-
-                    {errors.category && (
-                      <p className="text-error text-sm mt-1">
-                        {errors.category.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="font-medium text-sm mb-2 block">
-                      Billing Unit
-                    </label>
-
-                    <select
-                      {...register("unit")}
-                      className="select select-bordered w-full"
-                    >
-                      <option value="per project">Per Project</option>
-                      <option value="per hour">Per Hour</option>
-                      <option value="per event">Per Event</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="font-medium text-sm mb-2 block">
-                      Rating
-                    </label>
-
-                    <input
-                      {...register("rating")}
-                      defaultValue={4.5}
-                      type="number"
-                      step="0.1"
-                      className="input input-bordered w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="font-medium text-sm mb-2 block">
-                      Owner Email
-                    </label>
-
-                    <input
-                      value={user?.email || ""}
-                      disabled
-                      className="input input-bordered w-full bg-base-200"
-                    />
-                  </div>
-
-                </div>
-
-                {/* DESCRIPTION */}
-                <div className="mt-6">
+              {/* FORM FIELDS */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
                   <label className="font-medium text-sm mb-2 block">
-                    Description
+                    Service Name
                   </label>
 
-                  <textarea
-                    {...register("description")}
-                    rows={6}
-                    placeholder="Describe your decoration service..."
-                    className="textarea textarea-bordered w-full"
+                  <input
+                    {...register("service_name", {
+                      required: "Service name is required",
+                    })}
+                    placeholder="Wedding Decoration"
+                    className="input input-bordered w-full"
+                  />
+
+                  {errors.service_name && (
+                    <p className="text-error text-sm mt-1">
+                      {errors.service_name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="font-medium text-sm mb-2 block">Cost</label>
+
+                  <input
+                    {...register("cost", {
+                      required: "Cost is required",
+                    })}
+                    type="number"
+                    placeholder="15000"
+                    className="input input-bordered w-full"
+                  />
+
+                  {errors.cost && (
+                    <p className="text-error text-sm mt-1">
+                      {errors.cost.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="font-medium text-sm mb-2 block">
+                    Category
+                  </label>
+
+                  <input
+                    {...register("category", {
+                      required: "Category is required",
+                    })}
+                    placeholder="Wedding"
+                    className="input input-bordered w-full"
+                  />
+
+                  {errors.category && (
+                    <p className="text-error text-sm mt-1">
+                      {errors.category.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="font-medium text-sm mb-2 block">
+                    Billing Unit
+                  </label>
+
+                  <select
+                    {...register("unit")}
+                    className="select select-bordered w-full"
+                  >
+                    <option value="per project">Per Project</option>
+                    <option value="per hour">Per Hour</option>
+                    <option value="per event">Per Event</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-medium text-sm mb-2 block">
+                    Rating
+                  </label>
+
+                  <input
+                    {...register("rating")}
+                    defaultValue={4.5}
+                    type="number"
+                    step="0.1"
+                    className="input input-bordered w-full"
                   />
                 </div>
 
-                {/* BUTTON */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="
+                <div>
+                  <label className="font-medium text-sm mb-2 block">
+                    Owner Email
+                  </label>
+
+                  <input
+                    value={user?.email || ""}
+                    disabled
+                    className="input input-bordered w-full bg-base-200"
+                  />
+                </div>
+              </div>
+
+              {/* DESCRIPTION */}
+              <div className="mt-6">
+                <label className="font-medium text-sm mb-2 block">
+                  Description
+                </label>
+
+                <textarea
+                  {...register("description")}
+                  rows={6}
+                  placeholder="Describe your decoration service..."
+                  className="textarea textarea-bordered w-full"
+                />
+              </div>
+
+              {/* BUTTON */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="
                     btn
                     w-full
                     mt-8
@@ -359,106 +345,94 @@ const AddService = () => {
                     h-14
                     text-base
                   "
-                >
-                  {loading ? (
-                    <>
-                      <span className="loading loading-spinner"></span>
-                      Uploading...
-                    </>
-                  ) : (
-                    "Publish Service"
-                  )}
-                </button>
+              >
+                {loading ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Uploading...
+                  </>
+                ) : (
+                  "Publish Service"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
 
+        {/* LIVE PREVIEW */}
+        <div>
+          <div className="group relative h-130 rounded-[30px] overflow-hidden shadow-xl">
+            <img
+              src={previewService.images[0]}
+              alt={previewService.service_name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/60 transition-all duration-500"></div>
+
+            <div className="absolute top-6 left-6 right-6 flex justify-between z-20">
+              <span className="px-4 py-1.5 bg-primary text-primary-content rounded-full text-xs font-semibold">
+                {previewService.category}
+              </span>
+
+              <div className="flex items-center gap-1 bg-white/90 px-3 py-1 rounded-full text-sm font-medium">
+                <FaStar className="text-primary text-xs" />
+                {previewService.rating}
               </div>
-            </form>
-          </div>
+            </div>
 
-          {/* LIVE PREVIEW */}
-          <div>
-            <div className="group relative h-130 rounded-[30px] overflow-hidden shadow-xl">
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-8">
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {previewService.service_name}
+              </h3>
 
-              <img
-                src={previewService.images[0]}
-                alt={previewService.service_name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
+              <p className="text-primary text-xl font-bold">
+                ৳ {previewService.cost}
+              </p>
+            </div>
 
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/60 transition-all duration-500"></div>
-
-              <div className="absolute top-6 left-6 right-6 flex justify-between z-20">
-                <span className="px-4 py-1.5 bg-primary text-primary-content rounded-full text-xs font-semibold">
-                  {previewService.category}
-                </span>
-
-                <div className="flex items-center gap-1 bg-white/90 px-3 py-1 rounded-full text-sm font-medium">
-                  <FaStar className="text-primary text-xs" />
-                  {previewService.rating}
-                </div>
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-8">
-                <h3 className="text-2xl font-bold text-white mb-2">
+            <div className="absolute inset-0 z-30 flex flex-col justify-end p-6 opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-[28px] p-6 flex flex-col h-full">
+                <h3 className="text-2xl font-bold text-white mb-4">
                   {previewService.service_name}
                 </h3>
 
-                <p className="text-primary text-xl font-bold">
-                  ৳ {previewService.cost}
+                <p className="text-white/80 text-sm leading-7 mb-6 min-h-22.5">
+                  {previewService.description.slice(0, 120)}
                 </p>
-              </div>
 
-              <div className="absolute inset-0 z-30 flex flex-col justify-end p-6 opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-[28px] p-6 flex flex-col h-full">
+                <div className="flex justify-between items-center mt-auto mb-6">
+                  <div>
+                    <p className="text-white/60 text-xs">Starting Price</p>
 
-                  <h3 className="text-2xl font-bold text-white mb-4">
-                    {previewService.service_name}
-                  </h3>
-
-                  <p className="text-white/80 text-sm leading-7 mb-6 min-h-22.5">
-                    {previewService.description.slice(0, 120)}
-                  </p>
-
-                  <div className="flex justify-between items-center mt-auto mb-6">
-                    <div>
-                      <p className="text-white/60 text-xs">
-                        Starting Price
-                      </p>
-
-                      <h4 className="text-primary text-2xl font-bold">
-                        ৳ {previewService.cost}
-                      </h4>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-white/60 text-xs">
-                        Billing
-                      </p>
-
-                      <p className="text-white font-medium">
-                        {previewService.unit}
-                      </p>
-                    </div>
+                    <h4 className="text-primary text-2xl font-bold">
+                      ৳ {previewService.cost}
+                    </h4>
                   </div>
 
-                  <button
-                    type="button"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-primary text-primary-content font-semibold"
-                  >
-                    View Details
-                    <FaArrowRight />
-                  </button>
+                  <div className="text-right">
+                    <p className="text-white/60 text-xs">Billing</p>
 
+                    <p className="text-white font-medium">
+                      {previewService.unit}
+                    </p>
+                  </div>
                 </div>
-              </div>
 
+                <button
+                  type="button"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-primary text-primary-content font-semibold"
+                >
+                  View Details
+                  <FaArrowRight />
+                </button>
+              </div>
             </div>
           </div>
-
         </div>
-
+      </div>
     </div>
   );
 };
 
 export default AddService;
-
