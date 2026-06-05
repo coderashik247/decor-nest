@@ -17,6 +17,8 @@ import useAuth from "../../hooks/useAuth";
 import useAuthModal from "../../hooks/useAuthModal";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Loading from "../../components/Loading/Loading";
+import Reveal from "../../animation/Reveal";
 
 const ServicesDetails = () => {
   const { serviceId } = useParams();
@@ -70,11 +72,7 @@ const ServicesDetails = () => {
   }, [user, pendingBooking, setPendingBooking]);
 
   if (isLoading) {
-    return (
-      <div className="text-center py-20 text-xl font-semibold">
-        Loading Service...
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   if (!service) {
@@ -143,228 +141,230 @@ const ServicesDetails = () => {
   return (
     <section className="py-20 px-4 lg:px-8 bg-base-100">
       {/* TOP GRID */}
-      <div className="grid lg:grid-cols-12 gap-8">
-        {/* LEFT */}
-        <div className="lg:col-span-8">
-          {/* MAIN IMAGE */}
-          <div className="relative rounded-[36px] overflow-hidden group">
-            <img
-              src={mainImage}
-              alt={service.service_name}
-              className="w-full h-75 md:h-125 lg:h-155 object-cover group-hover:scale-105 transition duration-700"
-            />
+      <Reveal>
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* LEFT */}
+          <div className="lg:col-span-8">
+            {/* MAIN IMAGE */}
+            <div className="relative rounded-[36px] overflow-hidden group">
+              <img
+                src={mainImage}
+                alt={service.service_name}
+                className="w-full h-75 md:h-125 lg:h-155 object-cover group-hover:scale-105 transition duration-700"
+              />
 
-            {/* OVERLAY */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent"></div>
+              {/* OVERLAY */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent"></div>
 
-            {/* CATEGORY */}
-            <div className="absolute top-6 left-6">
-              <span className="px-5 py-2 rounded-full bg-primary text-primary-content font-semibold shadow-lg">
-                {service.category}
-              </span>
+              {/* CATEGORY */}
+              <div className="absolute top-6 left-6">
+                <span className="px-5 py-2 rounded-full bg-primary text-primary-content font-semibold shadow-lg">
+                  {service.category}
+                </span>
+              </div>
+
+              {/* FLOATING INFO */}
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="backdrop-blur-md bg-white/10 border border-white/10 rounded-3xl p-5">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">
+                        {service.service_name}
+                      </h2>
+
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <div className="flex items-center gap-2 text-primary">
+                          <FaStar />
+
+                          <span className="text-white font-medium">
+                            {service.rating} Rating
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-white/80">
+                          <FaMapMarkerAlt />
+
+                          <span>Bangladesh Wide Service</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h2 className="text-4xl font-black text-primary">
+                        ৳{service.cost}
+                      </h2>
+
+                      <p className="text-white/70 text-sm text-right">
+                        {service.unit}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* FLOATING INFO */}
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="backdrop-blur-md bg-white/10 border border-white/10 rounded-3xl p-5">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">
-                      {service.service_name}
-                    </h2>
+            {/* THUMBNAILS */}
+            <div className="grid grid-cols-4 gap-4 mt-5">
+              {service.images.map((img, index) => (
+                <div
+                  key={index}
+                  onClick={() => setMainImage(img)}
+                  className={`rounded-2xl overflow-hidden cursor-pointer border-2 transition duration-300 group ${
+                    mainImage === img
+                      ? "border-primary scale-[0.98]"
+                      : "border-transparent hover:border-primary/50"
+                  }`}
+                >
+                  <img
+                    src={img}
+                    alt="thumbnail"
+                    className="w-full h-24 md:h-32 object-cover group-hover:scale-110 transition duration-500"
+                  />
+                </div>
+              ))}
+            </div>
 
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <div className="flex items-center gap-2 text-primary">
-                        <FaStar />
+            {/* DESCRIPTION */}
+            <div className="mt-14">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <FaGem />
+                </div>
 
-                        <span className="text-white font-medium">
-                          {service.rating} Rating
-                        </span>
-                      </div>
+                <h2 className="text-3xl md:text-4xl font-bold">
+                  Service Overview
+                </h2>
+              </div>
 
-                      <div className="flex items-center gap-2 text-white/80">
-                        <FaMapMarkerAlt />
+              <p className="text-base-content/70 leading-9 text-base md:text-lg">
+                {service.description}
+              </p>
+            </div>
 
-                        <span>Bangladesh Wide Service</span>
-                      </div>
+            {/* FEATURES */}
+            <div className="grid md:grid-cols-3 gap-5 mt-14">
+              <div className="bg-base-100 border border-base-300 rounded-[28px] p-7 hover:-translate-y-2 transition duration-500 shadow-sm hover:shadow-xl">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl mb-5">
+                  <FaCalendarAlt />
+                </div>
+
+                <h3 className="text-2xl font-bold mb-3">Flexible Scheduling</h3>
+
+                <p className="text-base-content/70 leading-7">
+                  Choose your perfect event date and booking slot easily.
+                </p>
+              </div>
+
+              <div className="bg-base-100 border border-base-300 rounded-[28px] p-7 hover:-translate-y-2 transition duration-500 shadow-sm hover:shadow-xl">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl mb-5">
+                  <FaClock />
+                </div>
+
+                <h3 className="text-2xl font-bold mb-3">Fast Setup</h3>
+
+                <p className="text-base-content/70 leading-7">
+                  Quick and professional decoration setup without delays.
+                </p>
+              </div>
+
+              <div className="bg-base-100 border border-base-300 rounded-[28px] p-7 hover:-translate-y-2 transition duration-500 shadow-sm hover:shadow-xl">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl mb-5">
+                  <FaShieldAlt />
+                </div>
+
+                <h3 className="text-2xl font-bold mb-3">Trusted Service</h3>
+
+                <p className="text-base-content/70 leading-7">
+                  Experienced decorators with premium quality assurance.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDEBAR */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-24">
+              <div className="bg-base-100 border border-base-300 rounded-[36px] p-8 shadow-xl">
+                {/* TITLE */}
+                <div className="mb-8">
+                  <p className="text-primary uppercase tracking-[3px] text-sm font-semibold mb-3">
+                    Premium Booking
+                  </p>
+
+                  <h2 className="text-3xl font-bold leading-tight">
+                    Reserve Your Decoration Service Today
+                  </h2>
+                </div>
+
+                {/* CHECKLIST */}
+                <div className="space-y-5 mb-10">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <FaUsers />
+                    </div>
+
+                    <div>
+                      <h4 className="font-bold mb-1">Professional Team</h4>
+
+                      <p className="text-sm text-base-content/60">
+                        Skilled decorators for luxury event experiences.
+                      </p>
                     </div>
                   </div>
 
-                  <div>
-                    <h2 className="text-4xl font-black text-primary">
-                      ৳{service.cost}
-                    </h2>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <FaCheckCircle />
+                    </div>
 
-                    <p className="text-white/70 text-sm text-right">
-                      {service.unit}
-                    </p>
+                    <div>
+                      <h4 className="font-bold mb-1">Premium Materials</h4>
+
+                      <p className="text-sm text-base-content/60">
+                        Elegant flowers, lighting and decoration setup.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <FaClock />
+                    </div>
+
+                    <div>
+                      <h4 className="font-bold mb-1">Real-time Availability</h4>
+
+                      <p className="text-sm text-base-content/60">
+                        Flexible scheduling and fast booking confirmation.
+                      </p>
+                    </div>
                   </div>
                 </div>
+
+                {/* PRICE CARD */}
+                <div className="rounded-3xl bg-secondary text-secondary-content p-6 mb-8">
+                  <p className="text-white/70 mb-2">Starting From</p>
+
+                  <h2 className="text-5xl font-black text-primary">
+                    ৳{service.cost}
+                  </h2>
+
+                  <p className="text-white/60 mt-2">{service.unit}</p>
+                </div>
+
+                {/* BUTTON */}
+                <button
+                  onClick={handleBookNow}
+                  className="btn bg-primary hover:bg-primary border-none w-full h-14 rounded-full text-primary-content text-base font-semibold shadow-lg shadow-primary/20"
+                >
+                  Book Now
+                  <FaArrowRight />
+                </button>
               </div>
-            </div>
-          </div>
-
-          {/* THUMBNAILS */}
-          <div className="grid grid-cols-4 gap-4 mt-5">
-            {service.images.map((img, index) => (
-              <div
-                key={index}
-                onClick={() => setMainImage(img)}
-                className={`rounded-2xl overflow-hidden cursor-pointer border-2 transition duration-300 group ${
-                  mainImage === img
-                    ? "border-primary scale-[0.98]"
-                    : "border-transparent hover:border-primary/50"
-                }`}
-              >
-                <img
-                  src={img}
-                  alt="thumbnail"
-                  className="w-full h-24 md:h-32 object-cover group-hover:scale-110 transition duration-500"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* DESCRIPTION */}
-          <div className="mt-14">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                <FaGem />
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold">
-                Service Overview
-              </h2>
-            </div>
-
-            <p className="text-base-content/70 leading-9 text-base md:text-lg">
-              {service.description}
-            </p>
-          </div>
-
-          {/* FEATURES */}
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
-            <div className="bg-base-100 border border-base-300 rounded-[28px] p-7 hover:-translate-y-2 transition duration-500 shadow-sm hover:shadow-xl">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl mb-5">
-                <FaCalendarAlt />
-              </div>
-
-              <h3 className="text-2xl font-bold mb-3">Flexible Scheduling</h3>
-
-              <p className="text-base-content/70 leading-7">
-                Choose your perfect event date and booking slot easily.
-              </p>
-            </div>
-
-            <div className="bg-base-100 border border-base-300 rounded-[28px] p-7 hover:-translate-y-2 transition duration-500 shadow-sm hover:shadow-xl">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl mb-5">
-                <FaClock />
-              </div>
-
-              <h3 className="text-2xl font-bold mb-3">Fast Setup</h3>
-
-              <p className="text-base-content/70 leading-7">
-                Quick and professional decoration setup without delays.
-              </p>
-            </div>
-
-            <div className="bg-base-100 border border-base-300 rounded-[28px] p-7 hover:-translate-y-2 transition duration-500 shadow-sm hover:shadow-xl">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl mb-5">
-                <FaShieldAlt />
-              </div>
-
-              <h3 className="text-2xl font-bold mb-3">Trusted Service</h3>
-
-              <p className="text-base-content/70 leading-7">
-                Experienced decorators with premium quality assurance.
-              </p>
             </div>
           </div>
         </div>
-
-        {/* RIGHT SIDEBAR */}
-        <div className="lg:col-span-4">
-          <div className="sticky top-24">
-            <div className="bg-base-100 border border-base-300 rounded-[36px] p-8 shadow-xl">
-              {/* TITLE */}
-              <div className="mb-8">
-                <p className="text-primary uppercase tracking-[3px] text-sm font-semibold mb-3">
-                  Premium Booking
-                </p>
-
-                <h2 className="text-3xl font-bold leading-tight">
-                  Reserve Your Decoration Service Today
-                </h2>
-              </div>
-
-              {/* CHECKLIST */}
-              <div className="space-y-5 mb-10">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <FaUsers />
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold mb-1">Professional Team</h4>
-
-                    <p className="text-sm text-base-content/60">
-                      Skilled decorators for luxury event experiences.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <FaCheckCircle />
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold mb-1">Premium Materials</h4>
-
-                    <p className="text-sm text-base-content/60">
-                      Elegant flowers, lighting and decoration setup.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <FaClock />
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold mb-1">Real-time Availability</h4>
-
-                    <p className="text-sm text-base-content/60">
-                      Flexible scheduling and fast booking confirmation.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* PRICE CARD */}
-              <div className="rounded-3xl bg-secondary text-secondary-content p-6 mb-8">
-                <p className="text-white/70 mb-2">Starting From</p>
-
-                <h2 className="text-5xl font-black text-primary">
-                  ৳{service.cost}
-                </h2>
-
-                <p className="text-white/60 mt-2">{service.unit}</p>
-              </div>
-
-              {/* BUTTON */}
-              <button
-                onClick={handleBookNow}
-                className="btn bg-primary hover:bg-primary border-none w-full h-14 rounded-full text-primary-content text-base font-semibold shadow-lg shadow-primary/20"
-              >
-                Book Now
-                <FaArrowRight />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      </Reveal>
 
       {/* MODAL */}
       {showModal && (

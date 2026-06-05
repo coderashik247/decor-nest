@@ -4,6 +4,7 @@ import Loading from '../../../components/Loading/Loading';
 import AdminDashboardHome from './AdminDashboardHome';
 import DecoratorDashboardHome from './DecoratorDashboardHome';
 import UserDashboardHome from './UserDashboardHome';
+import Reveal from '../../../animation/Reveal';
 
 const DashboardHome = () => {
     const [role, roleLoading] = useRole();
@@ -12,13 +13,13 @@ const DashboardHome = () => {
         return <Loading></Loading>
     }
     if(role === 'admin'){
-        return <AdminDashboardHome></AdminDashboardHome>
+        return <Reveal><AdminDashboardHome></AdminDashboardHome></Reveal>
     }
     else if(role === 'decorator'){
-        return <DecoratorDashboardHome></DecoratorDashboardHome>
+        return <Reveal><DecoratorDashboardHome></DecoratorDashboardHome></Reveal>
     }
     else {
-        return <UserDashboardHome></UserDashboardHome>
+        return <Reveal><UserDashboardHome></UserDashboardHome></Reveal>
     }
 };
 
