@@ -31,6 +31,7 @@ const DashboardLayout = () => {
   };
 
   const { data: users = [] } = useQuery({
+    enabled: role === "admin",
     queryKey: ["users"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users");
