@@ -11,8 +11,7 @@ import {
   FaUsers,
   FaGem,
 } from "react-icons/fa";
-
-import servicesData from "../../utility/servicesData";
+import { useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import useAuthModal from "../../hooks/useAuthModal";
@@ -31,33 +30,67 @@ const ServicesDetails = () => {
     register,
     handleSubmit,
     formState: { errors },
-    control
+    control,
   } = useForm();
 
   const serviceCenters = useLoaderData();
-  const regionDuplicate = serviceCenters.map((c) => c.region);
 
-  const region = [...new Set(regionDuplicate)];
+  const region = [...new Set(serviceCenters.map((c) => c.region))];
 
-  const serviceRegion = useWatch({ name: "region", control });
+  const serviceRegion = useWatch({ name: "region", control, defaultValue: "" });
   const serviceByRegion = (region) => {
     const regionDistrict = serviceCenters.filter((c) => c.region === region);
     const district = regionDistrict.map((d) => d.district);
     return district;
   };
-
-  const service = servicesData.find((item) => item.id === parseInt(serviceId));
-
-  const [mainImage, setMainImage] = useState(service.images[0]);
-
   const [showModal, setShowModal] = useState(false);
+
+  const { data: service, isLoading } = useQuery({
+    queryKey: ["service", serviceId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/services/${serviceId}`);
+      return res.data;
+    },
+    enabled: !!serviceId,
+  });
+
+  const [mainImage, setMainImage] = useState("");
+
+  useEffect(() => {
+    if (service?.images?.length) {
+      setMainImage(service.images[0]);
+    }
+  }, [service]);
+
+  useEffect(() => {
+    if (user && pendingBooking) {
+      setShowModal(true);
+      setPendingBooking(false);
+    }
+  }, [user, pendingBooking, setPendingBooking]);
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-20 text-xl font-semibold">
+        Loading Service...
+      </div>
+    );
+  }
+
+  if (!service) {
+    return (
+      <div className="text-center py-20 text-xl font-semibold">
+        Service Not Found
+      </div>
+    );
+  }
 
   const handleBooking = async (data) => {
     const bookingInfo = {
       userName: user.displayName,
       userEmail: user.email,
 
-      serviceId: service.id,
+      serviceId: service._id,
       serviceName: service.service_name,
       serviceImage: service.images[0],
       servicePrice: service.cost,
@@ -92,7 +125,7 @@ const ServicesDetails = () => {
               icon: "success",
             });
             setShowModal(false);
-            navigate("/dashboard/my-bookings")
+            navigate("/dashboard/my-bookings");
           }
         });
       }
@@ -107,14 +140,6 @@ const ServicesDetails = () => {
       setShowLoginModal(true);
     }
   };
-
-  useEffect(() => {
-    if (user && pendingBooking) {
-      setShowModal(true);
-      setPendingBooking(false);
-    }
-  }, [user, pendingBooking, setPendingBooking]);
-
   return (
     <section className="py-20 px-4 lg:px-8 bg-base-100">
       {/* TOP GRID */}
@@ -363,7 +388,7 @@ const ServicesDetails = () => {
 
                   <input
                     type="text"
-                    value={user.displayName}
+                    value={user.displayName || ""}
                     readOnly
                     className="input input-bordered w-full rounded-2xl h-14"
                   />
@@ -374,7 +399,7 @@ const ServicesDetails = () => {
 
                   <input
                     type="email"
-                    value={user.email}
+                    value={user.email || ""}
                     readOnly
                     className="input input-bordered w-full rounded-2xl h-14"
                   />
@@ -438,37 +463,39 @@ const ServicesDetails = () => {
               </div>
 
               {/* LOCATION */}
-            {/* Region */}
-            <div>
-              <label className="font-semibold mb-3 block">Your Region</label>
-              <select
-                {...register("region")}
-                className="select select-bordered w-full rounded-2xl h-14"
-              >
-                <option>Select your Region</option>
-                {region.map((r, i) => (
-                  <option key={i} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* Region */}
+              <div>
+                <label className="font-semibold mb-3 block">Your Region</label>
+                <select
+                  {...register("region")}
+                  className="select select-bordered w-full rounded-2xl h-14"
+                >
+                  <option>Select your Region</option>
+                  {region.map((r, i) => (
+                    <option key={i} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* District */}
-            <div>
-              <label className="font-semibold mb-3 block">Your District</label>
-              <select
-                {...register("district")}
-                className="select select-bordered w-full rounded-2xl h-14"
-              >
-                <option>Select your District</option>
-                {serviceByRegion(serviceRegion).map((r, i) => (
-                  <option key={i} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* District */}
+              <div>
+                <label className="font-semibold mb-3 block">
+                  Your District
+                </label>
+                <select
+                  {...register("district")}
+                  className="select select-bordered w-full rounded-2xl h-14"
+                >
+                  <option>Select your District</option>
+                  {serviceByRegion(serviceRegion).map((r, i) => (
+                    <option key={i} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               {/* MODE */}
               <div>
@@ -484,9 +511,9 @@ const ServicesDetails = () => {
                   <option>Indoor Setup</option>
                   <option>Outdoor Setup</option>
                 </select>
-                {errors.location && (
+                {errors.serviceMode && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.location.message}
+                    {errors.serviceMode.message}
                   </p>
                 )}
               </div>

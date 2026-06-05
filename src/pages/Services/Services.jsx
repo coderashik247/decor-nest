@@ -1,10 +1,27 @@
 import React, { useEffect, useMemo, useState } from "react";
 import ServiceCard from "../../components/ServiceCard/ServiceCard";
-import servicesData from "../../utility/servicesData";
-
 import { FaSearch, FaSortAmountDown, FaFilter } from "react-icons/fa";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 
+/* ---------------- CATEGORY MAPPER ---------------- */
+const mapCategory = (cat = "") => {
+  const c = cat?.toLowerCase() || "";
+
+  if (c.includes("wedding")) return "wedding";
+  if (c.includes("birthday")) return "birthday";
+  if (c.includes("home")) return "home";
+  if (c.includes("corporate")) return "corporate";
+  if (c.includes("holud") || c.includes("engagement")) return "engagement";
+  if (c.includes("anniversary")) return "anniversary";
+
+  return "other";
+};
+
+/* ---------------- MAIN COMPONENT ---------------- */
 const Services = () => {
+  const axiosSecure = useAxiosSecure();
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
@@ -12,27 +29,37 @@ const Services = () => {
 
   const itemsPerPage = 6;
 
-  // normalize helper
-  const normalize = (str) => str.toLowerCase().trim();
+  /* ---------------- FETCH DATA ---------------- */
+  const { data: services = [], isLoading } = useQuery({
+    queryKey: ["services"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/services");
+      return res.data;
+    },
+  });
 
-  // FILTER + SEARCH + SORT
+  /* ---------------- FILTER / SEARCH / SORT ---------------- */
   const filteredData = useMemo(() => {
-    let data = [...servicesData];
+    let data = (services || []).map((s) => ({
+      ...s,
+      normalizedCategory: mapCategory(s.category),
+    }));
 
     // SEARCH
     if (search.trim()) {
-      data = data.filter(
-        (s) =>
-          s.service_name.toLowerCase().includes(search.toLowerCase()) ||
-          s.category.toLowerCase().includes(search.toLowerCase()),
-      );
+      data = data.filter((s) => {
+        const keyword = search.toLowerCase();
+
+        return (
+          s.service_name?.toLowerCase().includes(keyword) ||
+          s.normalizedCategory?.includes(keyword)
+        );
+      });
     }
 
-    // FILTER
+    // CATEGORY FILTER
     if (category !== "all") {
-      data = data.filter((s) =>
-        normalize(s.category).includes(normalize(category)),
-      );
+      data = data.filter((s) => s.normalizedCategory === category);
     }
 
     // SORT
@@ -43,22 +70,24 @@ const Services = () => {
     }
 
     return data;
-  }, [search, category, sort]);
+  }, [search, category, sort, services]);
 
-  // pagination safety
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
+  /* ---------------- PAGINATION ---------------- */
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredData.length / itemsPerPage)
+  );
 
   const paginatedData = filteredData.slice(
     (page - 1) * itemsPerPage,
-    page * itemsPerPage,
+    page * itemsPerPage
   );
 
-  // reset page on filter change
+  /* ---------------- RESET PAGE ON CHANGE ---------------- */
   useEffect(() => {
     setPage(1);
   }, [search, category, sort]);
 
-  // scroll to top on page change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
@@ -70,9 +99,18 @@ const Services = () => {
     setPage(1);
   };
 
+  /* ---------------- LOADING ---------------- */
+  if (isLoading) {
+    return (
+      <div className="text-center py-20 text-xl font-semibold">
+        Loading services...
+      </div>
+    );
+  }
+
   return (
     <div className="w-11/12 mx-auto py-10 space-y-8">
-      {/* HERO SECTION */}
+      {/* HERO */}
       <div className="text-center max-w-3xl mx-auto">
         <p className="text-primary uppercase tracking-[4px] text-sm font-semibold">
           Premium Decoration Services
@@ -146,7 +184,7 @@ const Services = () => {
       </div>
 
       {/* RESULT INFO */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-sm text-base-content/60">
+      <div className="flex justify-between items-center text-sm text-base-content/60">
         <p>
           Showing{" "}
           <span className="badge badge-primary text-black">
@@ -165,12 +203,9 @@ const Services = () => {
         <ServiceCard servicesData={paginatedData} />
       ) : (
         <div className="text-center py-24 bg-base-100 border border-base-300 rounded-3xl">
-          <div className="text-5xl mb-4">🔍</div>
-
           <h3 className="text-2xl font-bold text-secondary">
             No Services Found
           </h3>
-
           <p className="text-base-content/60 mt-2">
             Try different keywords or reset filters
           </p>
@@ -187,7 +222,6 @@ const Services = () => {
       {/* PAGINATION */}
       {filteredData.length > itemsPerPage && (
         <div className="flex justify-center gap-2 flex-wrap">
-          {/* PREV */}
           <button
             className="btn btn-sm btn-outline"
             onClick={() => setPage((p) => Math.max(p - 1, 1))}
@@ -195,14 +229,13 @@ const Services = () => {
             Prev
           </button>
 
-          {/* PAGES */}
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
               onClick={() => setPage(i + 1)}
-              className={`btn btn-sm rounded-xl transition-all duration-200 ${
+              className={`btn btn-sm rounded-xl ${
                 page === i + 1
-                  ? "btn-primary text-black scale-105"
+                  ? "btn-primary text-black"
                   : "btn-outline"
               }`}
             >
@@ -210,10 +243,11 @@ const Services = () => {
             </button>
           ))}
 
-          {/* NEXT */}
           <button
             className="btn btn-sm btn-outline"
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            onClick={() =>
+              setPage((p) => Math.min(p + 1, totalPages))
+            }
           >
             Next
           </button>

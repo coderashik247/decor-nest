@@ -5,8 +5,6 @@ const ServiceCard = ({ servicesData }) => {
   return (
     <section className="py-16">
 
-    
-
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
 
@@ -100,7 +98,7 @@ const ServiceCard = ({ servicesData }) => {
 
                 {/* BUTTON */}
                 <Link
-                  to={`/services/${service.id}`}
+                  to={`/services/${service._id}`}
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-primary text-primary-content font-semibold hover:opacity-90 transition-all duration-300"
                 >
                   View Details
