@@ -7,10 +7,11 @@ const ServiceCard = ({ servicesData }) => {
     <section className="py-16">
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
-        <Reveal>
+    
           {servicesData.map((service) => (
-            <div
-              key={service._id}
+
+            <Reveal key={service._id}>
+              <div
               className="group relative h-120 rounded-[30px] overflow-hidden shadow-[0_10px_35px_rgba(17,24,39,0.08)]"
               data-aos="zoom-in-up"
               data-aos-duration="1000"
@@ -92,8 +93,9 @@ const ServiceCard = ({ servicesData }) => {
                 </div>
               </div>
             </div>
+            </Reveal>
           ))}
-        </Reveal>
+
       </div>
     </section>
   );

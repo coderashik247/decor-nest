@@ -124,10 +124,9 @@ const Decorator = () => {
 
       {/* CARDS */}
       <div className="grid md:grid-cols-2 gap-8">
-        <Reveal>
-          {currentData.map((decorator, index) => (
+        {currentData.map((decorator, index) => (
+          <Reveal key={index}>
             <div
-              key={index}
               className="group flex flex-col sm:flex-row h-70 rounded-[28px] overflow-hidden bg-base-100 border border-base-200 shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-500"
             >
               {/* IMAGE */}
@@ -174,8 +173,8 @@ const Decorator = () => {
                 </div>
               </div>
             </div>
-          ))}
-        </Reveal>
+          </Reveal>
+        ))}
       </div>
 
       {/* DOTS */}
