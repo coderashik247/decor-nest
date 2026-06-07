@@ -226,15 +226,26 @@ const RegisterModal = () => {
                   type="password"
                   {...register("password", {
                     required: "Password is required",
-                    minLength: {
-                      value: 6,
-                      message: "Password must be at least 6 characters",
-                    },
-                    pattern: {
-                      value:
-                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                      message:
-                        "Must contain uppercase, lowercase, number & special character",
+                    validate: {
+                      minLength: (value) =>
+                        value.length >= 6 ||
+                        "Password must be at least 6 characters",
+
+                      hasLowercase: (value) =>
+                        /[a-z]/.test(value) ||
+                        "Password must contain at least one lowercase letter",
+
+                      hasUppercase: (value) =>
+                        /[A-Z]/.test(value) ||
+                        "Password must contain at least one uppercase letter",
+
+                      hasNumber: (value) =>
+                        /\d/.test(value) ||
+                        "Password must contain at least one number",
+
+                      hasSpecialChar: (value) =>
+                        /[^\w\s]/.test(value) ||
+                        "Password must contain at least one special character",
                     },
                   })}
                   placeholder="Create a strong password"
