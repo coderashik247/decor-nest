@@ -231,19 +231,19 @@ const RegisterModal = () => {
                         value.length >= 6 ||
                         "Password must be at least 6 characters",
 
-                      hasLowercase: (value) =>
+                      lowercase: (value) =>
                         /[a-z]/.test(value) ||
                         "Password must contain at least one lowercase letter",
 
-                      hasUppercase: (value) =>
+                      uppercase: (value) =>
                         /[A-Z]/.test(value) ||
                         "Password must contain at least one uppercase letter",
 
-                      hasNumber: (value) =>
+                      number: (value) =>
                         /\d/.test(value) ||
                         "Password must contain at least one number",
 
-                      hasSpecialChar: (value) =>
+                      special: (value) =>
                         /[^\w\s]/.test(value) ||
                         "Password must contain at least one special character",
                     },
