@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaUser,
@@ -20,68 +20,72 @@ const RegisterModal = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { registerUser, updateUserProfile } = useAuth();
   const { setShowRegisterModal, setShowLoginModal, setPendingBooking } =
     useAuthModal();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
-  const handleRegistration = (data) => {
-    const profileImg = data.photo[0];
-    registerUser(data.email, data.password)
-      .then((result) => {
-        console.log(result.user);
+  const handleRegistration = async (data) => {
+    try {
+      setIsSubmitting(true);
 
-        // store the image and get the photo url:
-        const formData = new FormData();
-        formData.append("image", profileImg);
+      const profileImg = data.photo[0];
 
-        const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
+      // Create Firebase User
+      const result = await registerUser(data.email, data.password);
+      console.log(result.user);
 
-        axios.post(image_API_URL, formData).then((res) => {
-          console.log(res.data.data.url);
+      // Upload image to imgbb
+      const formData = new FormData();
+      formData.append("image", profileImg);
 
-          const photoURL = res.data.data.url;
+      const image_API_URL = `https://api.imgbb.com/1/upload?key=${
+        import.meta.env.VITE_image_host_key
+      }`;
 
-          const userInfo = {
-            email: data.email,
-            displayName: data.name,
-            photoURL: photoURL,
-          };
+      const imageRes = await axios.post(image_API_URL, formData);
+      const photoURL = imageRes.data.data.url;
 
-          // user data save on database
-          axiosSecure.post("/users", userInfo).then((res) => {
-            if (res.data.insertedId) {
-              console.log("User created in the database");
-            }
-          });
+      // Save user in database
+      const userInfo = {
+        email: data.email,
+        displayName: data.name,
+        photoURL,
+      };
 
-          // update user profile:
-          const userProfile = {
-            displayName: data.name,
-            photoURL: photoURL,
-          };
+      const dbRes = await axiosSecure.post("/users", userInfo);
 
-          updateUserProfile(userProfile)
-            .then(() => {
-              console.log("User profile updated!!!");
-              // 🔥 register modal close
-              setShowRegisterModal(false);
+      if (dbRes.data.insertedId) {
+        console.log("User created in database");
+      }
 
-              // 🔥 reset pending booking
-              setPendingBooking(false);
-
-              navigate("/");
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+      // Update Firebase profile
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL,
       });
+
+      console.log("User profile updated");
+
+      // Close modal
+      setShowRegisterModal(false);
+      setPendingBooking(false);
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+
+      // optional
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Registration Failed",
+      //   text: error.message,
+      // });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // CLOSE MODAL
@@ -261,9 +265,22 @@ const RegisterModal = () => {
             </div>
 
             {/* REGISTER BUTTON */}
-            <button className="btn btn-primary h-12 sm:h-14 w-full rounded-2xl border-none text-sm sm:text-base font-semibold text-primary-content transition-all duration-300 hover:scale-[1.01]">
-              Create Account
-              <FaArrowRight />
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn btn-primary h-12 sm:h-14 w-full rounded-2xl border-none text-sm sm:text-base font-semibold text-primary-content transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  Create Account
+                  <FaArrowRight />
+                </>
+              )}
             </button>
 
             {/* DIVIDER */}
